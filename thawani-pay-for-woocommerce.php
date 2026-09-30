@@ -3,7 +3,7 @@
  * Plugin Name:          Thawani Pay for WooCommerce
  * Plugin URI:           https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce
  * Description:          Accept debit and credit card payments in Omani Rial through Thawani Checkout — hosted checkout, saved cards, subscriptions, one-click refunds, signed webhooks and automatic payment reconciliation.
- * Version:              1.2.0
+ * Version:              1.2.1
  * Requires at least:    6.2
  * Requires PHP:         7.4
  * Requires Plugins:     woocommerce
@@ -21,7 +21,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'THAWANI_PAY_VERSION', '1.2.0' );
+define( 'THAWANI_PAY_VERSION', '1.2.1' );
 define( 'THAWANI_PAY_FILE', __FILE__ );
 define( 'THAWANI_PAY_PATH', plugin_dir_path( __FILE__ ) );
 define( 'THAWANI_PAY_URL', plugin_dir_url( __FILE__ ) );

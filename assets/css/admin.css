@@ -25,7 +25,7 @@
 
 /* ---------- shared building blocks ---------- */
 
-.tp-settings, .tp-wrap { color: var(--tp-ink); max-width: 1200px; }
+.tp-settings, .tp-wrap { color: var(--tp-ink); max-width: 1600px; }
 .tp-settings *, .tp-wrap * { box-sizing: border-box; }
 
 .tp-hero {
@@ -88,7 +88,9 @@ table.tp-hidden { display: none; }
 
 /* ---------- settings: layout, nav, section cards ---------- */
 
-.tp-layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 22px; align-items: start; }
+.tp-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 22px; align-items: start; }
+/* WooCommerce styles every nav in the settings form with a negative margin; neutralise it for ours. */
+body.woocommerce_page_wc-settings #mainform .tp-nav, .tp-nav { margin: 0; width: auto; }
 .tp-nav { position: sticky; top: 46px; display: grid; gap: 2px; padding: 8px; background: #fff; border: 1px solid var(--tp-line); border-radius: var(--tp-radius); box-shadow: var(--tp-shadow); }
 .tp-nav__link { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; color: var(--tp-ink-2); font-weight: 560; text-decoration: none; }
 .tp-nav__link svg { color: #94a3b8; flex: none; }
@@ -146,10 +148,11 @@ table.tp-hidden { display: none; }
 .tp-sections .button.thawani-pay-test:hover { border-color: var(--tp-brand); color: var(--tp-brand-600); }
 
 /* sticky save bar (JS moves WooCommerce's submit button here) */
-.tp-savebar { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 4px; padding: 12px 18px; border: 1px solid var(--tp-line); border-radius: var(--tp-radius); background: rgba(255, 255, 255, .97); backdrop-filter: blur(8px); box-shadow: 0 -6px 20px rgba(15, 23, 42, .06); }
+.tp-savebar { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 4px; padding: 12px 18px; border: 1px solid var(--tp-line); border-radius: var(--tp-radius); background: #fff; box-shadow: 0 -8px 24px rgba(15, 23, 42, .10); }
 .tp-savebar p.submit { margin: 0; padding: 0; }
 .tp-savebar .woocommerce-save-button { height: 38px; padding: 0 20px !important; border-radius: 9px !important; background: var(--tp-brand) !important; border-color: var(--tp-brand) !important; font-weight: 600; }
 .tp-savebar .woocommerce-save-button:hover { background: var(--tp-brand-600) !important; }
+.tp-savebar .woocommerce-save-button:disabled { opacity: .45; cursor: default; }
 .tp-savebar__hint { margin-inline-end: auto; color: var(--tp-muted); font-size: 12.5px; }
 
 /* ---------- transactions ---------- */

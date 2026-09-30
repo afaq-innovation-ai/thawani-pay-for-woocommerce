@@ -3,6 +3,12 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] — 2026-09-30
+
+### Fixed
+- Settings screen: the section menu was shifted 30px to the left by a WooCommerce rule for navigation elements inside the settings form; it now lines up with the header and cards.
+- Settings and transactions screens use the full width of large monitors (up to 1600px), and the save bar is fully opaque.
+
 ## [1.2.0] — 2026-09-30
 
 ### Changed
@@ -42,6 +48,7 @@ All notable changes to this project are documented here. The format follows
 - HPOS and Cart & Checkout blocks compatibility declarations.
 - PHPUnit tests, WordPress Coding Standards, CI and release workflows, Docker development stack.
 
+[1.2.1]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.1
 [1.2.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.0
 [1.1.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.1.0
 [1.0.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.0.0
