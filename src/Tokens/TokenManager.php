@@ -227,6 +227,74 @@ final class TokenManager {
 	}
 
 	/**
+	 * Everything needed to draw a card (wallet, classic and block checkout).
+	 *
+	 * @param \WC_Payment_Token $token Token.
+	 * @return array{id:int, name:string, brand:string, brandLabel:string, last4:string, expiry:string, funding:string, isDefault:bool, expired:bool}
+	 */
+	public static function card_data( \WC_Payment_Token $token ): array {
+		$cc    = $token instanceof \WC_Payment_Token_CC;
+		$brand = $cc ? strtolower( (string) $token->get_card_type() ) : '';
+		$month = $cc ? (string) $token->get_expiry_month() : '';
+		$year  = $cc ? (string) $token->get_expiry_year() : '';
+
+		return array(
+			'id'         => $token->get_id(),
+			'name'       => self::nickname( $token ),
+			'brand'      => in_array( $brand, array( 'visa', 'mastercard' ), true ) ? $brand : 'card',
+			'brandLabel' => self::brand_label( $token ),
+			'last4'      => $cc ? (string) $token->get_last4() : '',
+			'expiry'     => $month && $year ? $month . '/' . substr( $year, -2 ) : '',
+			'funding'    => ucfirst( strtolower( (string) $token->get_meta( 'funding' ) ) ),
+			'isDefault'  => $token->is_default(),
+			'expired'    => $month && $year && strtotime( sprintf( '%04d-%02d-01 +1 month', (int) $year, (int) $month ) ) < time(),
+		);
+	}
+
+	/**
+	 * Card data for the current customer's Thawani cards, keyed by token id.
+	 *
+	 * @return array<int, array>
+	 */
+	public static function cards_for_current_user(): array {
+		if ( ! is_user_logged_in() ) {
+			return array();
+		}
+
+		$cards = array();
+		foreach ( \WC_Payment_Tokens::get_customer_tokens( get_current_user_id(), Gateway::ID ) as $token ) {
+			$cards[ $token->get_id() ] = self::card_data( $token );
+		}
+
+		return $cards;
+	}
+
+	/**
+	 * Mini bank card markup (classic checkout). Kept in sync with assets/js/blocks.js.
+	 *
+	 * @param array $card Card data from card_data().
+	 */
+	public static function mini_card_html( array $card ): string {
+		$logos = array(
+			'visa'       => '<svg viewBox="0 0 64 22" width="46" height="16" aria-hidden="true"><text x="0" y="19" text-anchor="start" font-family="Arial Black,Arial,sans-serif" font-size="21" font-style="italic" font-weight="900" fill="#fff">VISA</text></svg>',
+			'mastercard' => '<svg viewBox="0 0 46 28" width="36" height="22" aria-hidden="true"><circle cx="16" cy="14" r="12" fill="#eb001b"/><circle cx="30" cy="14" r="12" fill="#f79e1b"/><path d="M23 4.3a12 12 0 0 1 0 19.4 12 12 0 0 1 0-19.4z" fill="#ff5f00"/></svg>',
+			'card'       => '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="1.8" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+		);
+		$name  = '' !== $card['name'] ? $card['name'] : $card['brandLabel'];
+
+		return sprintf(
+			'<span class="tp-mini tp-cc tp-cc--%1$s%2$s" aria-hidden="true"><span class="tp-mini__top"><span class="tp-mini__title"><span class="tp-mini__check"></span><span class="tp-mini__name">%3$s</span></span><span class="tp-cc__brand">%4$s</span></span><span class="tp-cc__chip"><span></span></span><span class="tp-mini__number" dir="ltr">•••• %5$s</span><span class="tp-mini__bottom"><span dir="ltr">%6$s</span><span>%7$s</span></span></span>',
+			esc_attr( $card['brand'] ),
+			$card['expired'] ? ' is-expired' : '',
+			esc_html( $name ),
+			$logos[ $card['brand'] ] ?? $logos['card'],
+			esc_html( $card['last4'] ),
+			esc_html( $card['expiry'] ),
+			esc_html( $card['funding'] )
+		);
+	}
+
+	/**
 	 * Card brand label, e.g. "Visa".
 	 *
 	 * @param \WC_Payment_Token $token Token.

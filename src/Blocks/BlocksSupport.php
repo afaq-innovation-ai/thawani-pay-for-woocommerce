@@ -95,6 +95,7 @@ final class BlocksSupport extends AbstractPaymentMethodType {
 			'testMode'       => Settings::is_test(),
 			'supports'       => $this->gateway ? array_values( array_filter( $this->gateway->supports, array( $this->gateway, 'supports' ) ) ) : array( 'products' ),
 			'showSavedCards' => $tokenization && is_user_logged_in(),
+			'cards'          => $tokenization ? (object) \AfaqInnovation\ThawaniPay\Tokens\TokenManager::cards_for_current_user() : new \stdClass(),
 			/** This filter is documented in src/Gateway/Gateway.php */
 			'showSaveOption' => $tokenization && is_user_logged_in() && (bool) apply_filters( 'thawani_pay_show_save_option', true ),
 		);

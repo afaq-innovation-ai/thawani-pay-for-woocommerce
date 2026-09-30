@@ -63,7 +63,7 @@ Full or partial refunds straight from the WooCommerce order screen. The money go
 <td valign="top">
 
 ### 🔁 Saved cards wallet
-Saved cards appear as real bank cards under *My account*: brand colours, name, last digits and expiry. Customers can rename, set a default or remove them, then pay with one click + OTP.
+Saved cards appear as real bank cards under *My account*: brand colours, name, last digits and expiry. Customers can rename, set a default or remove them, and pick one at checkout straight from the card itself.
 
 </td>
 <td valign="top">
@@ -190,7 +190,7 @@ A settings screen with a live health panel shows the API connection, webhooks, c
 </td>
 <td width="33%" valign="top">
 <img src="docs/screenshots/15-checkout-saved-card.png" alt="Pay with saved card" />
-<p align="center"><b>Pick a card by name at checkout</b><br><sub>One click, then the bank OTP.</sub></p>
+<p align="center"><b>Pick a card at checkout</b><br><sub>Saved cards appear as cards on the block and classic checkout. One click, then the bank OTP.</sub></p>
 </td>
 <td width="33%" valign="top">
 <img src="docs/screenshots/13-thawani-save-card.png" alt="Save card" />

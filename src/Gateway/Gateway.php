@@ -298,24 +298,18 @@ class Gateway extends \WC_Payment_Gateway {
 	 * @param \WC_Payment_Token $token Token.
 	 */
 	public function get_saved_payment_method_option_html( $token ) {
-		$name  = \AfaqInnovation\ThawaniPay\Tokens\TokenManager::nickname( $token );
-		$brand = $token instanceof \WC_Payment_Token_CC ? strtolower( (string) $token->get_card_type() ) : '';
-		$brand = in_array( $brand, array( 'visa', 'mastercard' ), true ) ? $brand : 'card';
-		$meta  = $token instanceof \WC_Payment_Token_CC
-			? sprintf( '•••• %1$s · %2$s/%3$s', $token->get_last4(), $token->get_expiry_month(), substr( (string) $token->get_expiry_year(), -2 ) )
-			: $token->get_display_name();
+		$card = \AfaqInnovation\ThawaniPay\Tokens\TokenManager::card_data( $token );
 
 		$html = sprintf(
 			'<li class="woocommerce-SavedPaymentMethods-token tp-saved-option">
-				<input id="wc-%1$s-payment-token-%2$s" type="radio" name="wc-%1$s-payment-token" value="%2$s" style="width:auto;" class="woocommerce-SavedPaymentMethods-tokenInput" %3$s />
-				<label for="wc-%1$s-payment-token-%2$s"><img class="tp-saved-option__brand" src="%4$s" alt="" /><span class="tp-saved-option__name">%5$s</span> <span class="tp-saved-option__meta" dir="ltr">%6$s</span></label>
+				<input id="wc-%1$s-payment-token-%2$s" type="radio" name="wc-%1$s-payment-token" value="%2$s" class="woocommerce-SavedPaymentMethods-tokenInput tp-saved-option__input" %3$s />
+				<label for="wc-%1$s-payment-token-%2$s"><span class="screen-reader-text">%4$s</span>%5$s</label>
 			</li>',
 			esc_attr( $this->id ),
 			esc_attr( (string) $token->get_id() ),
 			checked( $token->is_default(), true, false ),
-			esc_url( THAWANI_PAY_URL . 'assets/images/' . $brand . '.svg' ),
-			esc_html( '' !== $name ? $name : \AfaqInnovation\ThawaniPay\Tokens\TokenManager::brand_label( $token ) ),
-			esc_html( $meta )
+			esc_html( ( '' !== $card['name'] ? $card['name'] . ' · ' : '' ) . $token->get_display_name() ),
+			\AfaqInnovation\ThawaniPay\Tokens\TokenManager::mini_card_html( $card )
 		);
 
 		return apply_filters( 'woocommerce_payment_gateway_get_saved_payment_method_option_html', $html, $token, $this );

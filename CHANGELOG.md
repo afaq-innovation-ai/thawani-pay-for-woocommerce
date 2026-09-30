@@ -3,6 +3,12 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-09-30
+
+### Added
+- Saved Thawani cards are shown as selectable mini bank cards on the checkout: card name, brand, masked number, expiry and type, with a green outline and check mark on the selected card. Works on the block checkout (the native radio stays in place, so selection and payment are unchanged) and on the classic checkout.
+- Cards stack full width on phones.
+
 ## [1.3.0] — 2026-09-30
 
 ### Added
@@ -58,6 +64,7 @@ All notable changes to this project are documented here. The format follows
 - HPOS and Cart & Checkout blocks compatibility declarations.
 - PHPUnit tests, WordPress Coding Standards, CI and release workflows, Docker development stack.
 
+[1.4.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.4.0
 [1.3.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.3.0
 [1.2.1]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.1
 [1.2.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.0
