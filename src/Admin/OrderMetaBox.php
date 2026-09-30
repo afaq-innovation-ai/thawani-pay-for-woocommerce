@@ -59,16 +59,34 @@ final class OrderMetaBox {
 			return;
 		}
 
-		$mode = OrderMeta::mode( $order );
+		$mode    = OrderMeta::mode( $order );
+		$amount  = (int) $order->get_meta( OrderMeta::AMOUNT );
+		$amount  = $amount ? $amount : Money::to_baisa( $order->get_total() );
+		$card    = (string) $order->get_meta( OrderMeta::CARD );
+		$refunds = array_filter( (array) $order->get_meta( OrderMeta::REFUNDS ) );
+
+		$refunded = 0;
+		foreach ( $refunds as $refund ) {
+			$refunded += (int) ( $refund['amount'] ?? 0 );
+		}
+
+		if ( $order->is_paid() ) {
+			$state = $refunded >= $amount && $refunded > 0 ? 'refunded' : ( $refunded > 0 ? 'partial' : 'paid' );
+		} else {
+			$state = $order->has_status( array( 'failed', 'cancelled' ) ) ? 'cancelled' : 'unpaid';
+		}
+
+		$labels = array(
+			'paid'      => __( 'Paid', 'thawani-pay-for-woocommerce' ),
+			'partial'   => __( 'Partially refunded', 'thawani-pay-for-woocommerce' ),
+			'refunded'  => __( 'Refunded', 'thawani-pay-for-woocommerce' ),
+			'unpaid'    => __( 'Awaiting payment', 'thawani-pay-for-woocommerce' ),
+			'cancelled' => __( 'Not paid', 'thawani-pay-for-woocommerce' ),
+		);
+
 		$rows = array(
-			__( 'Payment ID', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::PAYMENT_ID ),
-			__( 'Card', 'thawani-pay-for-woocommerce' )    => trim( $order->get_meta( OrderMeta::CARD ) . ' ' . ( $order->get_meta( OrderMeta::CARD_TYPE ) ? '(' . $order->get_meta( OrderMeta::CARD_TYPE ) . ')' : '' ) ),
-			__( 'Invoice', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::INVOICE ),
-			__( 'Amount', 'thawani-pay-for-woocommerce' )  => $order->get_meta( OrderMeta::AMOUNT ) ? Money::format_baisa( (int) $order->get_meta( OrderMeta::AMOUNT ) ) : '',
-			__( 'Session', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::SESSION_ID ),
-			__( 'Payment intent', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::INTENT_ID ),
-			__( 'Reference', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::REFERENCE ),
-			__( 'Customer', 'thawani-pay-for-woocommerce' ) => $order->get_meta( OrderMeta::CUSTOMER_ID ),
+			__( 'Payment ID', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::PAYMENT_ID ),
+			__( 'Invoice', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::INVOICE ),
 		);
 
 		/**
@@ -78,6 +96,15 @@ final class OrderMetaBox {
 		 * @param \WC_Order             $order Order.
 		 */
 		$rows = (array) apply_filters( 'thawani_pay_order_box_rows', $rows, $order );
+
+		$technical = array(
+			__( 'Environment', 'thawani-pay-for-woocommerce' ) => Settings::is_test( $mode ) ? __( 'Sandbox', 'thawani-pay-for-woocommerce' ) : __( 'Live', 'thawani-pay-for-woocommerce' ),
+			__( 'Session', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::SESSION_ID ),
+			__( 'Payment intent', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::INTENT_ID ),
+			__( 'Reference', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::REFERENCE ),
+			__( 'Customer', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::CUSTOMER_ID ),
+			__( 'Saved card', 'thawani-pay-for-woocommerce' ) => (string) $order->get_meta( OrderMeta::CARD_ID ),
+		);
 
 		$sync_url = wp_nonce_url(
 			add_query_arg(
@@ -90,12 +117,26 @@ final class OrderMetaBox {
 			'thawani_pay_sync_' . $order->get_id()
 		);
 		?>
-		<div class="thawani-pay-box">
-			<p class="thawani-pay-box__status">
-				<span class="thawani-pay-badge thawani-pay-badge--<?php echo esc_attr( $mode ); ?>"><?php echo esc_html( Settings::is_test( $mode ) ? __( 'Sandbox', 'thawani-pay-for-woocommerce' ) : __( 'Live', 'thawani-pay-for-woocommerce' ) ); ?></span>
-				<span class="thawani-pay-pill thawani-pay-pill--<?php echo $order->is_paid() ? 'paid' : 'unpaid'; ?>"><?php echo esc_html( $order->is_paid() ? __( 'Paid', 'thawani-pay-for-woocommerce' ) : __( 'Not paid', 'thawani-pay-for-woocommerce' ) ); ?></span>
-			</p>
-			<dl>
+		<div class="tp-box">
+			<div class="tp-box__top">
+				<div class="tp-box__amount"><?php echo esc_html( number_format( Money::from_baisa( $amount ), 3 ) ); ?> <small>OMR</small></div>
+				<span class="tp-pill tp-pill--<?php echo esc_attr( $state ); ?>"><?php echo esc_html( $labels[ $state ] ); ?></span>
+			</div>
+			<?php if ( Settings::is_test( $mode ) ) : ?>
+				<span class="tp-badge tp-badge--test"><?php esc_html_e( 'Sandbox', 'thawani-pay-for-woocommerce' ); ?></span>
+			<?php endif; ?>
+
+			<?php if ( $card ) : ?>
+				<div class="tp-box__card">
+					<img src="<?php echo esc_url( THAWANI_PAY_URL . 'assets/images/' . self::brand( $card ) . '.svg' ); ?>" alt="" width="34" height="22" />
+					<span dir="ltr"><?php echo esc_html( $card ); ?></span>
+					<?php if ( $order->get_meta( OrderMeta::CARD_TYPE ) ) : ?>
+						<small><?php echo esc_html( (string) $order->get_meta( OrderMeta::CARD_TYPE ) ); ?></small>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
+			<dl class="tp-box__meta">
 				<?php foreach ( $rows as $label => $value ) : ?>
 					<?php
 					if ( '' === (string) $value ) {
@@ -103,21 +144,58 @@ final class OrderMetaBox {
 					}
 					?>
 					<dt><?php echo esc_html( $label ); ?></dt>
-					<dd><code><?php echo esc_html( (string) $value ); ?></code></dd>
+					<dd><?php echo esc_html( (string) $value ); ?></dd>
 				<?php endforeach; ?>
+				<?php if ( $refunded ) : ?>
+					<dt><?php esc_html_e( 'Refunded', 'thawani-pay-for-woocommerce' ); ?></dt>
+					<dd class="tp-neg">−<?php echo esc_html( Money::format_baisa( $refunded ) ); ?></dd>
+				<?php endif; ?>
 			</dl>
-			<?php $refunds = (array) $order->get_meta( OrderMeta::REFUNDS ); ?>
-			<?php if ( array_filter( $refunds ) ) : ?>
-				<p class="thawani-pay-box__sub"><?php esc_html_e( 'Refunds', 'thawani-pay-for-woocommerce' ); ?></p>
-				<ul class="thawani-pay-box__refunds">
+
+			<?php if ( $refunds ) : ?>
+				<ul class="tp-box__refunds">
 					<?php foreach ( $refunds as $refund ) : ?>
-						<li><code><?php echo esc_html( (string) ( $refund['refund_id'] ?? '' ) ); ?></code> — <?php echo esc_html( Money::format_baisa( (int) ( $refund['amount'] ?? 0 ) ) ); ?></li>
+						<li><span><?php echo esc_html( (string) ( $refund['refund_id'] ?? '' ) ); ?></span><strong><?php echo esc_html( Money::format_baisa( (int) ( $refund['amount'] ?? 0 ) ) ); ?></strong></li>
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>
-			<p><a class="button button-secondary" href="<?php echo esc_url( $sync_url ); ?>"><?php esc_html_e( 'Sync with Thawani', 'thawani-pay-for-woocommerce' ); ?></a></p>
+
+			<details class="tp-box__tech">
+				<summary><?php esc_html_e( 'Technical details', 'thawani-pay-for-woocommerce' ); ?></summary>
+				<dl>
+					<?php foreach ( $technical as $label => $value ) : ?>
+						<?php
+						if ( '' === $value ) {
+							continue;
+						}
+						?>
+						<dt><?php echo esc_html( $label ); ?></dt>
+						<dd><code><?php echo esc_html( $value ); ?></code></dd>
+					<?php endforeach; ?>
+				</dl>
+			</details>
+
+			<a class="tp-btn tp-btn--block" href="<?php echo esc_url( $sync_url ); ?>">
+				<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12a9 9 0 0 1 15.5-6.2M21 4v5h-5M3 20v-5h5"/></svg>
+				<?php esc_html_e( 'Sync with Thawani', 'thawani-pay-for-woocommerce' ); ?>
+			</a>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Card brand image for a masked number.
+	 *
+	 * @param string $masked Masked card number.
+	 */
+	public static function brand( string $masked ): string {
+		$first = substr( (string) preg_replace( '/\D/', '', $masked ), 0, 1 );
+
+		if ( '4' === $first ) {
+			return 'visa';
+		}
+
+		return in_array( $first, array( '2', '5' ), true ) ? 'mastercard' : 'card';
 	}
 
 	/**

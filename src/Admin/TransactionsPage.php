@@ -92,76 +92,134 @@ final class TransactionsPage {
 		};
 		$newer = 'all' === $scope && $page > 1 ? $link( $mode, $scope, $page - 1 ) : '';
 		$older = 'all' === $scope && count( $sessions ) >= self::PER_PAGE ? $link( $mode, $scope, $page + 1 ) : '';
+
+		$kpi = array(
+			'volume'    => 0,
+			'paid'      => 0,
+			'unpaid'    => 0,
+			'cancelled' => 0,
+		);
+		foreach ( $sessions as $session ) {
+			$status = is_array( $session ) ? strtolower( (string) ( $session['payment_status'] ?? '' ) ) : '';
+			if ( isset( $kpi[ $status ] ) ) {
+				++$kpi[ $status ];
+			}
+			if ( 'paid' === $status ) {
+				$kpi['volume'] += (int) ( $session['total_amount'] ?? 0 );
+			}
+		}
 		?>
-		<div class="wrap thawani-pay-transactions">
-			<h1 class="wp-heading-inline">
-				<img src="<?php echo esc_url( THAWANI_PAY_URL . 'assets/images/thawani-pay.svg' ); ?>" alt="" width="28" height="28" />
-				<?php esc_html_e( 'Thawani Transactions', 'thawani-pay-for-woocommerce' ); ?>
-			</h1>
-			<a class="page-title-action" href="<?php echo esc_url( Admin::settings_url() ); ?>"><?php esc_html_e( 'Settings', 'thawani-pay-for-woocommerce' ); ?></a>
-			<hr class="wp-header-end" />
-
-			<nav class="nav-tab-wrapper">
-				<a class="nav-tab <?php echo Settings::MODE_TEST === $mode ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $link( 'test', $scope ) ); ?>"><?php esc_html_e( 'Sandbox', 'thawani-pay-for-woocommerce' ); ?></a>
-				<a class="nav-tab <?php echo Settings::MODE_LIVE === $mode ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( $link( 'live', $scope ) ); ?>"><?php esc_html_e( 'Live', 'thawani-pay-for-woocommerce' ); ?></a>
-			</nav>
-
-			<ul class="subsubsub">
-				<li><a class="<?php echo 'store' === $scope ? 'current' : ''; ?>" href="<?php echo esc_url( $link( $mode, 'store' ) ); ?>"><?php esc_html_e( 'This store', 'thawani-pay-for-woocommerce' ); ?></a> |</li>
-				<li><a class="<?php echo 'all' === $scope ? 'current' : ''; ?>" href="<?php echo esc_url( $link( $mode, 'all' ) ); ?>"><?php esc_html_e( 'Entire Thawani account', 'thawani-pay-for-woocommerce' ); ?></a></li>
-			</ul>
-			<br class="clear" />
-
-			<?php if ( 'store' === $scope ) : ?>
-				<p class="description">
-					<?php
-					/* translators: %d: number of sessions scanned. */
-					echo esc_html( sprintf( __( 'Sessions created by this store among the %d most recent in the Thawani account.', 'thawani-pay-for-woocommerce' ), self::SCAN_LIMIT ) );
-					?>
-				</p>
-			<?php endif; ?>
-
-			<?php if ( $error ) : ?>
-				<div class="notice notice-error inline"><p><?php echo esc_html( $error ); ?></p></div>
-			<?php endif; ?>
-
-			<table class="widefat striped thawani-pay-table">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Created', 'thawani-pay-for-woocommerce' ); ?></th>
-						<th><?php esc_html_e( 'Invoice', 'thawani-pay-for-woocommerce' ); ?></th>
-						<th><?php esc_html_e( 'Order', 'thawani-pay-for-woocommerce' ); ?></th>
-						<th><?php esc_html_e( 'Customer', 'thawani-pay-for-woocommerce' ); ?></th>
-						<th class="num"><?php esc_html_e( 'Amount', 'thawani-pay-for-woocommerce' ); ?></th>
-						<th><?php esc_html_e( 'Status', 'thawani-pay-for-woocommerce' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php if ( empty( $sessions ) ) : ?>
-					<tr><td colspan="6" class="thawani-pay-empty"><?php esc_html_e( 'No checkout sessions yet.', 'thawani-pay-for-woocommerce' ); ?></td></tr>
-				<?php endif; ?>
-				<?php
-				foreach ( $sessions as $session ) {
-					if ( is_array( $session ) ) {
-						self::row( $session );
-					}
-				}
-				?>
-				</tbody>
-			</table>
-
-			<?php if ( $newer || $older ) : ?>
-				<div class="tablenav bottom">
-					<div class="tablenav-pages">
-						<?php if ( $newer ) : ?>
-							<a class="button" href="<?php echo esc_url( $newer ); ?>">&larr; <?php esc_html_e( 'Newer', 'thawani-pay-for-woocommerce' ); ?></a>
-						<?php endif; ?>
-						<?php if ( $older ) : ?>
-							<a class="button" href="<?php echo esc_url( $older ); ?>"><?php esc_html_e( 'Older', 'thawani-pay-for-woocommerce' ); ?> &rarr;</a>
-						<?php endif; ?>
+		<div class="wrap tp-wrap">
+			<h1 class="screen-reader-text"><?php esc_html_e( 'Thawani Transactions', 'thawani-pay-for-woocommerce' ); ?></h1>
+			<header class="tp-hero tp-hero--compact">
+				<div class="tp-hero__brand">
+					<img src="<?php echo esc_url( THAWANI_PAY_URL . 'assets/images/thawani-pay.svg' ); ?>" alt="" width="44" height="44" />
+					<div>
+						<h2 class="tp-hero__title"><?php esc_html_e( 'Transactions', 'thawani-pay-for-woocommerce' ); ?></h2>
+						<p class="tp-hero__sub"><?php esc_html_e( 'Live checkout sessions from the Thawani API, linked to your orders.', 'thawani-pay-for-woocommerce' ); ?></p>
 					</div>
 				</div>
-			<?php endif; ?>
+				<div class="tp-hero__actions">
+					<div class="tp-segment" role="tablist">
+						<a role="tab" class="<?php echo Settings::MODE_TEST === $mode ? 'is-active' : ''; ?>" href="<?php echo esc_url( $link( 'test', $scope ) ); ?>"><?php esc_html_e( 'Sandbox', 'thawani-pay-for-woocommerce' ); ?></a>
+						<a role="tab" class="<?php echo Settings::MODE_LIVE === $mode ? 'is-active' : ''; ?>" href="<?php echo esc_url( $link( 'live', $scope ) ); ?>"><?php esc_html_e( 'Live', 'thawani-pay-for-woocommerce' ); ?></a>
+					</div>
+					<a class="tp-btn tp-btn--ghost" href="<?php echo esc_url( Admin::settings_url() ); ?>"><?php esc_html_e( 'Settings', 'thawani-pay-for-woocommerce' ); ?></a>
+				</div>
+			</header>
+
+			<div class="tp-kpis">
+				<div class="tp-kpi tp-kpi--brand">
+					<span class="tp-kpi__label"><?php esc_html_e( 'Collected', 'thawani-pay-for-woocommerce' ); ?></span>
+					<strong class="tp-kpi__value"><?php echo esc_html( number_format( Money::from_baisa( $kpi['volume'] ), 3 ) ); ?> <small>OMR</small></strong>
+					<span class="tp-kpi__hint"><?php esc_html_e( 'Paid sessions in this view', 'thawani-pay-for-woocommerce' ); ?></span>
+				</div>
+				<div class="tp-kpi">
+					<span class="tp-kpi__label"><?php esc_html_e( 'Paid', 'thawani-pay-for-woocommerce' ); ?></span>
+					<strong class="tp-kpi__value"><?php echo esc_html( number_format_i18n( $kpi['paid'] ) ); ?></strong>
+					<span class="tp-kpi__hint tp-dot tp-dot--paid"><?php esc_html_e( 'Completed payments', 'thawani-pay-for-woocommerce' ); ?></span>
+				</div>
+				<div class="tp-kpi">
+					<span class="tp-kpi__label"><?php esc_html_e( 'Awaiting payment', 'thawani-pay-for-woocommerce' ); ?></span>
+					<strong class="tp-kpi__value"><?php echo esc_html( number_format_i18n( $kpi['unpaid'] ) ); ?></strong>
+					<span class="tp-kpi__hint tp-dot tp-dot--unpaid"><?php esc_html_e( 'Open payment links', 'thawani-pay-for-woocommerce' ); ?></span>
+				</div>
+				<div class="tp-kpi">
+					<span class="tp-kpi__label"><?php esc_html_e( 'Cancelled', 'thawani-pay-for-woocommerce' ); ?></span>
+					<strong class="tp-kpi__value"><?php echo esc_html( number_format_i18n( $kpi['cancelled'] ) ); ?></strong>
+					<span class="tp-kpi__hint tp-dot tp-dot--cancelled"><?php esc_html_e( 'Cancelled or expired', 'thawani-pay-for-woocommerce' ); ?></span>
+				</div>
+			</div>
+
+			<section class="tp-card tp-card--table">
+				<div class="tp-toolbar">
+					<div class="tp-chips" role="group" aria-label="<?php esc_attr_e( 'Filter by status', 'thawani-pay-for-woocommerce' ); ?>">
+						<button type="button" class="tp-chip is-active" data-filter=""><?php esc_html_e( 'All', 'thawani-pay-for-woocommerce' ); ?> <span><?php echo esc_html( (string) count( $sessions ) ); ?></span></button>
+						<button type="button" class="tp-chip" data-filter="paid"><?php esc_html_e( 'Paid', 'thawani-pay-for-woocommerce' ); ?> <span><?php echo esc_html( (string) $kpi['paid'] ); ?></span></button>
+						<button type="button" class="tp-chip" data-filter="unpaid"><?php esc_html_e( 'Unpaid', 'thawani-pay-for-woocommerce' ); ?> <span><?php echo esc_html( (string) $kpi['unpaid'] ); ?></span></button>
+						<button type="button" class="tp-chip" data-filter="cancelled"><?php esc_html_e( 'Cancelled', 'thawani-pay-for-woocommerce' ); ?> <span><?php echo esc_html( (string) $kpi['cancelled'] ); ?></span></button>
+					</div>
+					<div class="tp-toolbar__right">
+						<input type="search" class="tp-search" placeholder="<?php esc_attr_e( 'Search order, customer or invoice…', 'thawani-pay-for-woocommerce' ); ?>" aria-label="<?php esc_attr_e( 'Search transactions', 'thawani-pay-for-woocommerce' ); ?>" />
+						<div class="tp-segment tp-segment--sm">
+							<a class="<?php echo 'store' === $scope ? 'is-active' : ''; ?>" href="<?php echo esc_url( $link( $mode, 'store' ) ); ?>"><?php esc_html_e( 'This store', 'thawani-pay-for-woocommerce' ); ?></a>
+							<a class="<?php echo 'all' === $scope ? 'is-active' : ''; ?>" href="<?php echo esc_url( $link( $mode, 'all' ) ); ?>"><?php esc_html_e( 'Entire Thawani account', 'thawani-pay-for-woocommerce' ); ?></a>
+						</div>
+					</div>
+				</div>
+
+				<?php if ( $error ) : ?>
+					<div class="tp-alert tp-alert--error"><?php echo esc_html( $error ); ?></div>
+				<?php endif; ?>
+
+				<table class="tp-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Customer', 'thawani-pay-for-woocommerce' ); ?></th>
+							<th><?php esc_html_e( 'Order', 'thawani-pay-for-woocommerce' ); ?></th>
+							<th><?php esc_html_e( 'Invoice', 'thawani-pay-for-woocommerce' ); ?></th>
+							<th><?php esc_html_e( 'Created', 'thawani-pay-for-woocommerce' ); ?></th>
+							<th><?php esc_html_e( 'Status', 'thawani-pay-for-woocommerce' ); ?></th>
+							<th class="tp-num"><?php esc_html_e( 'Amount', 'thawani-pay-for-woocommerce' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php
+					foreach ( $sessions as $session ) {
+						if ( is_array( $session ) ) {
+							self::row( $session );
+						}
+					}
+					?>
+					</tbody>
+				</table>
+
+				<div class="tp-empty" <?php echo $sessions ? 'hidden' : ''; ?>>
+					<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+					<p><?php esc_html_e( 'No checkout sessions yet.', 'thawani-pay-for-woocommerce' ); ?></p>
+				</div>
+
+				<footer class="tp-card__foot">
+					<span>
+						<?php
+						if ( 'store' === $scope ) {
+							/* translators: %d: number of sessions scanned. */
+							echo esc_html( sprintf( __( 'Sessions created by this store among the %d most recent in the Thawani account.', 'thawani-pay-for-woocommerce' ), self::SCAN_LIMIT ) );
+						}
+						?>
+					</span>
+					<?php if ( $newer || $older ) : ?>
+						<span class="tp-pager">
+							<?php if ( $newer ) : ?>
+								<a class="tp-btn tp-btn--ghost" href="<?php echo esc_url( $newer ); ?>">&larr; <?php esc_html_e( 'Newer', 'thawani-pay-for-woocommerce' ); ?></a>
+							<?php endif; ?>
+							<?php if ( $older ) : ?>
+								<a class="tp-btn tp-btn--ghost" href="<?php echo esc_url( $older ); ?>"><?php esc_html_e( 'Older', 'thawani-pay-for-woocommerce' ); ?> &rarr;</a>
+							<?php endif; ?>
+						</span>
+					<?php endif; ?>
+				</footer>
+			</section>
 		</div>
 		<?php
 	}
@@ -177,22 +235,47 @@ final class TransactionsPage {
 		$order     = $order_id ? wc_get_order( $order_id ) : null;
 		$status    = strtolower( (string) ( $session['payment_status'] ?? '' ) );
 		$meta      = isset( $session['metadata'] ) && is_array( $session['metadata'] ) ? $session['metadata'] : array();
-		$created   = isset( $session['created_at'] ) ? strtotime( (string) $session['created_at'] . ( preg_match( '/Z|[+-]\d\d:?\d\d$/', (string) $session['created_at'] ) ? '' : 'Z' ) ) : 0;
-		$format    = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+		$raw_date  = (string) ( $session['created_at'] ?? '' );
+		$created   = $raw_date ? strtotime( $raw_date . ( preg_match( '/Z|[+-]\d\d:?\d\d$/', $raw_date ) ? '' : 'Z' ) ) : 0;
+		$name      = trim( (string) ( $meta['Customer name'] ?? '' ) );
+		$email     = (string) ( $meta['Email address'] ?? '' );
+		$initials  = '';
+		foreach ( array_slice( preg_split( '/\s+/u', $name ? $name : '?' ), 0, 2 ) as $part ) {
+			$initials .= mb_strtoupper( mb_substr( $part, 0, 1 ) );
+		}
+		$search = strtolower( implode( ' ', array( $name, $email, $reference, (string) ( $session['invoice'] ?? '' ), $order ? '#' . $order->get_order_number() : '' ) ) );
 		?>
-		<tr>
-			<td><?php echo esc_html( $created ? wp_date( $format, $created ) : '—' ); ?></td>
-			<td><code><?php echo esc_html( (string) ( $session['invoice'] ?? '' ) ); ?></code></td>
+		<tr data-status="<?php echo esc_attr( $status ); ?>" data-search="<?php echo esc_attr( $search ); ?>">
+			<td>
+				<div class="tp-who">
+					<span class="tp-avatar" aria-hidden="true"><?php echo esc_html( $initials ); ?></span>
+					<span><strong><?php echo esc_html( $name ? $name : __( 'Guest', 'thawani-pay-for-woocommerce' ) ); ?></strong>
+					<?php
+					if ( $email ) :
+						?>
+						<small><?php echo esc_html( $email ); ?></small><?php endif; ?></span>
+				</div>
+			</td>
 			<td>
 				<?php if ( $order instanceof \WC_Order ) : ?>
-					<a href="<?php echo esc_url( $order->get_edit_order_url() ); ?>">#<?php echo esc_html( $order->get_order_number() ); ?></a>
+					<a class="tp-link" href="<?php echo esc_url( $order->get_edit_order_url() ); ?>">#<?php echo esc_html( $order->get_order_number() ); ?></a>
 				<?php else : ?>
-					<span class="thawani-pay-muted"><?php echo esc_html( $reference ); ?></span>
+					<span class="tp-muted"><?php echo esc_html( $reference ); ?></span>
 				<?php endif; ?>
 			</td>
-			<td><?php echo esc_html( (string) ( $meta['Customer name'] ?? '—' ) ); ?></td>
-			<td class="num"><?php echo esc_html( Money::format_baisa( (int) ( $session['total_amount'] ?? 0 ) ) ); ?></td>
-			<td><span class="thawani-pay-pill thawani-pay-pill--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( self::status_label( $status ) ); ?></span></td>
+			<td><code class="tp-code"><?php echo esc_html( (string) ( $session['invoice'] ?? '' ) ); ?></code></td>
+			<td>
+				<?php if ( $created ) : ?>
+					<span title="<?php echo esc_attr( wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $created ) ); ?>">
+						<?php
+						/* translators: %s: human time difference. */
+						echo esc_html( sprintf( __( '%s ago', 'thawani-pay-for-woocommerce' ), human_time_diff( $created ) ) );
+						?>
+					</span>
+				<?php endif; ?>
+			</td>
+			<td><span class="tp-pill tp-pill--<?php echo esc_attr( $status ); ?>"><?php echo esc_html( self::status_label( $status ) ); ?></span></td>
+			<td class="tp-num"><strong><?php echo esc_html( number_format( Money::from_baisa( (int) ( $session['total_amount'] ?? 0 ) ), 3 ) ); ?></strong> <small>OMR</small></td>
 		</tr>
 		<?php
 	}

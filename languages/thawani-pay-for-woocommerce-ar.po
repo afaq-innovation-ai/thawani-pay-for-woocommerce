@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Thawani Pay for WooCommerce 1.0.0\n"
+"Project-Id-Version: Thawani Pay for WooCommerce 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/issues\n"
 "Last-Translator: Afaq Innovation and AI\n"
 "Language-Team: Afaq Innovation and AI\n"
@@ -11,21 +11,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
-"POT-Creation-Date: 2026-09-30T09:58:45+00:00\n"
+"POT-Creation-Date: 2026-09-30T10:22:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: thawani-pay-for-woocommerce\n"
 
 #. Plugin Name of the plugin
 #: thawani-pay-for-woocommerce.php
-#: src/Gateway/Gateway.php:490
 msgid "Thawani Pay for WooCommerce"
 msgstr "ثواني للدفع لـ WooCommerce"
 
 #. Description of the plugin
 #: thawani-pay-for-woocommerce.php
-msgid "Accept debit and credit card payments in Omani Rial through Thawani Checkout — hosted checkout, saved cards, one-click refunds, signed webhooks and automatic payment reconciliation."
-msgstr "اقبل مدفوعات البطاقات البنكية والائتمانية بالريال العماني عبر بوابة ثواني: صفحة دفع مستضافة، وبطاقات محفوظة، واسترداد بنقرة واحدة، وإشعارات Webhook موقعة، ومطابقة تلقائية للمدفوعات."
+msgid "Accept debit and credit card payments in Omani Rial through Thawani Checkout — hosted checkout, saved cards, subscriptions, one-click refunds, signed webhooks and automatic payment reconciliation."
+msgstr "اقبل مدفوعات البطاقات البنكية والائتمانية بالريال العماني عبر بوابة ثواني: صفحة دفع مستضافة، وبطاقات محفوظة، واشتراكات، واسترداد بنقرة واحدة، وإشعارات Webhook موقعة، ومطابقة تلقائية للمدفوعات."
 
 #. Author of the plugin
 #: thawani-pay-for-woocommerce.php
@@ -44,70 +43,88 @@ msgstr "نُسخ"
 msgid "Request failed"
 msgstr "تعذر إتمام الطلب"
 
-#: src/Admin/Admin.php:80
+#: src/Admin/Admin.php:68
+#: src/Admin/Status.php:102
+msgid "Connected"
+msgstr "متصل"
+
+#: src/Admin/Admin.php:69
+#: src/Admin/Status.php:102
+msgid "Not connected"
+msgstr "غير متصل"
+
+#: src/Admin/Admin.php:70
+msgid "You have unsaved changes"
+msgstr "لديك تغييرات غير محفوظة"
+
+#: src/Admin/Admin.php:83
 msgid "Not allowed."
 msgstr "غير مسموح."
 
-#: src/Admin/Admin.php:88
+#: src/Admin/Admin.php:91
 msgid "Enter both the secret and the publishable key."
 msgstr "أدخل المفتاح السري والمفتاح العام معا."
 
-#: src/Admin/Admin.php:97
+#: src/Admin/Admin.php:101
+#: src/Admin/Status.php:72
 msgid "Key rejected by Thawani."
 msgstr "رفضت ثواني المفتاح."
 
 #. translators: 1: environment, 2: response time in ms.
-#: src/Admin/Admin.php:105
+#: src/Admin/Admin.php:130
 #, php-format
 msgid "Connected to Thawani %1$s (%2$d ms)."
 msgstr "تم الاتصال بثواني – %1$s (%2$d مللي ثانية)."
 
-#: src/Admin/Admin.php:106
+#: src/Admin/Admin.php:131
 #: src/Gateway/CheckoutService.php:103
 msgid "sandbox"
 msgstr "البيئة التجريبية"
 
-#: src/Admin/Admin.php:106
+#: src/Admin/Admin.php:131
 #: src/Gateway/CheckoutService.php:103
 msgid "live"
 msgstr "البيئة الفعلية"
 
-#: src/Admin/Admin.php:121
+#: src/Admin/Admin.php:154
 msgid "Thawani settings"
 msgstr "إعدادات ثواني"
 
 #. translators: %s: currency code.
-#: src/Admin/Admin.php:125
+#: src/Admin/Admin.php:158
 #, php-format
 msgid "Thawani Pay only accepts Omani Rial, but your store currency is %s. The payment method is hidden at checkout."
 msgstr "تقبل ثواني الريال العماني فقط، وعملة متجرك %s؛ لذا أُخفيت وسيلة الدفع من صفحة الدفع."
 
 #. translators: %s: settings link.
-#: src/Admin/Admin.php:130
+#: src/Admin/Admin.php:163
 #, php-format
 msgid "Thawani Pay is enabled but the API keys for the active environment are missing. Open %s."
 msgstr "ثواني مفعّلة لكن مفاتيح API للبيئة الحالية غير موجودة. افتح %s."
 
-#: src/Admin/Admin.php:134
+#: src/Admin/Admin.php:167
 msgid "Thawani Pay is in live mode but your store is not served over HTTPS. Thawani requires an SSL certificate in production."
 msgstr "ثواني تعمل في البيئة الفعلية، لكن متجرك لا يعمل عبر HTTPS. تشترط ثواني شهادة SSL في البيئة الفعلية."
 
 #. translators: %s: settings link.
-#: src/Admin/Admin.php:140
+#: src/Admin/Admin.php:173
 #, php-format
 msgid "Thawani Pay is in sandbox mode — orders are not charged. Switch to live in %s when you are ready."
 msgstr "ثواني تعمل في البيئة التجريبية ولن تُخصم أي مبالغ. انتقل إلى البيئة الفعلية من %s عندما تكون جاهزا."
 
-#: src/Admin/Admin.php:150
-#: src/Admin/TransactionsPage.php:101
+#: src/Admin/Admin.php:193
+#: src/Admin/TransactionsPage.php:127
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: src/Admin/Admin.php:163
+#: src/Admin/Admin.php:206
+#: src/Admin/TransactionsPage.php:118
+#: src/Gateway/Gateway.php:506
 msgid "Transactions"
 msgstr "المعاملات"
 
-#: src/Admin/Admin.php:164
+#: src/Admin/Admin.php:207
+#: src/Gateway/Gateway.php:507
 msgid "Documentation"
 msgstr "التوثيق"
 
@@ -115,102 +132,201 @@ msgstr "التوثيق"
 #: src/Admin/TransactionsPage.php:41
 #: src/Blocks/BlocksSupport.php:91
 #: src/Gateway/Gateway.php:32
+#: src/Gateway/Gateway.php:499
 #: assets/js/blocks.js:18
 msgid "Thawani Pay"
 msgstr "ثواني للدفع"
 
-#: src/Admin/OrderMetaBox.php:64
+#: src/Admin/OrderMetaBox.php:80
+#: src/Admin/TransactionsPage.php:138
+#: src/Admin/TransactionsPage.php:158
+#: src/Admin/TransactionsPage.php:314
+msgid "Paid"
+msgstr "مدفوع"
+
+#: src/Admin/OrderMetaBox.php:81
+msgid "Partially refunded"
+msgstr "مسترد جزئيا"
+
+#: src/Admin/OrderMetaBox.php:82
+#: src/Admin/OrderMetaBox.php:150
+msgid "Refunded"
+msgstr "مسترد"
+
+#: src/Admin/OrderMetaBox.php:83
+#: src/Admin/TransactionsPage.php:143
+msgid "Awaiting payment"
+msgstr "بانتظار الدفع"
+
+#: src/Admin/OrderMetaBox.php:84
+msgid "Not paid"
+msgstr "غير مدفوع"
+
+#: src/Admin/OrderMetaBox.php:88
 #: src/Gateway/ThankYou.php:147
 msgid "Payment ID"
 msgstr "رقم الدفعة"
 
-#: src/Admin/OrderMetaBox.php:65
-#: src/Gateway/ThankYou.php:144
-msgid "Card"
-msgstr "البطاقة"
-
-#: src/Admin/OrderMetaBox.php:66
-#: src/Admin/TransactionsPage.php:132
+#: src/Admin/OrderMetaBox.php:89
+#: src/Admin/TransactionsPage.php:180
 msgid "Invoice"
 msgstr "الفاتورة"
 
-#: src/Admin/OrderMetaBox.php:67
-#: src/Admin/TransactionsPage.php:135
-msgid "Amount"
-msgstr "المبلغ"
+#: src/Admin/OrderMetaBox.php:101
+msgid "Environment"
+msgstr "البيئة"
 
-#: src/Admin/OrderMetaBox.php:68
-msgid "Session"
-msgstr "جلسة الدفع"
-
-#: src/Admin/OrderMetaBox.php:69
-msgid "Payment intent"
-msgstr "نية الدفع"
-
-#: src/Admin/OrderMetaBox.php:70
-msgid "Reference"
-msgstr "المرجع"
-
-#: src/Admin/OrderMetaBox.php:71
-#: src/Admin/TransactionsPage.php:134
-msgid "Customer"
-msgstr "العميل"
-
-#: src/Admin/OrderMetaBox.php:95
-#: src/Admin/TransactionsPage.php:105
-#: src/Gateway/Gateway.php:482
+#. translators: 1: environment, 2: response time.
+#: src/Admin/OrderMetaBox.php:101
+#: src/Admin/OrderMetaBox.php:126
+#: src/Admin/Status.php:105
+#: src/Admin/TransactionsPage.php:124
+#: src/Gateway/Gateway.php:500
 msgid "Sandbox"
 msgstr "تجريبي"
 
-#: src/Admin/OrderMetaBox.php:95
-#: src/Admin/TransactionsPage.php:106
-#: src/Gateway/Gateway.php:482
+#. translators: 1: environment, 2: response time.
+#: src/Admin/OrderMetaBox.php:101
+#: src/Admin/Status.php:105
+#: src/Admin/TransactionsPage.php:125
+#: src/Gateway/Gateway.php:500
 msgid "Live"
 msgstr "فعلي"
 
-#: src/Admin/OrderMetaBox.php:96
-#: src/Admin/TransactionsPage.php:235
-msgid "Paid"
-msgstr "مدفوع"
+#: src/Admin/OrderMetaBox.php:102
+msgid "Session"
+msgstr "جلسة الدفع"
 
-#: src/Admin/OrderMetaBox.php:96
-msgid "Not paid"
-msgstr "غير مدفوع"
+#: src/Admin/OrderMetaBox.php:103
+msgid "Payment intent"
+msgstr "نية الدفع"
 
-#: src/Admin/OrderMetaBox.php:111
-msgid "Refunds"
-msgstr "المبالغ المستردة"
+#: src/Admin/OrderMetaBox.php:104
+msgid "Reference"
+msgstr "المرجع"
 
-#: src/Admin/OrderMetaBox.php:118
+#: src/Admin/OrderMetaBox.php:105
+#: src/Admin/TransactionsPage.php:178
+msgid "Customer"
+msgstr "العميل"
+
+#: src/Admin/OrderMetaBox.php:106
+msgid "Saved card"
+msgstr "البطاقة المحفوظة"
+
+#: src/Admin/OrderMetaBox.php:164
+msgid "Technical details"
+msgstr "التفاصيل التقنية"
+
+#: src/Admin/OrderMetaBox.php:180
 msgid "Sync with Thawani"
 msgstr "مزامنة مع ثواني"
 
-#: src/Admin/OrderMetaBox.php:132
+#: src/Admin/OrderMetaBox.php:210
 msgid "You are not allowed to do that."
 msgstr "لا تملك صلاحية تنفيذ هذا الإجراء."
 
-#: src/Admin/OrderMetaBox.php:154
+#: src/Admin/OrderMetaBox.php:232
 msgid "Thawani confirms this order is paid."
 msgstr "أكدت ثواني أن هذا الطلب مدفوع."
 
-#: src/Admin/OrderMetaBox.php:155
+#: src/Admin/OrderMetaBox.php:233
 msgid "Thawani reports the payment is still pending."
 msgstr "تفيد ثواني بأن الدفعة ما زالت قيد الانتظار."
 
-#: src/Admin/OrderMetaBox.php:156
+#: src/Admin/OrderMetaBox.php:234
 msgid "Thawani reports the payment was cancelled or expired."
 msgstr "تفيد ثواني بأن الدفعة أُلغيت أو انتهت صلاحيتها."
 
-#: src/Admin/OrderMetaBox.php:157
+#: src/Admin/OrderMetaBox.php:235
 msgid "Thawani returned data that does not match this order. See the order notes and log."
 msgstr "أعادت ثواني بيانات لا تطابق هذا الطلب. راجع ملاحظات الطلب والسجل."
 
-#: src/Admin/OrderMetaBox.php:159
+#: src/Admin/OrderMetaBox.php:237
 msgid "Could not reach Thawani. Check the log under WooCommerce → Status → Logs."
 msgstr "تعذر الاتصال بثواني. راجع السجل في WooCommerce ← الحالة ← السجلات."
 
+#: src/Admin/Status.php:60
+msgid "API keys are missing."
+msgstr "مفاتيح API غير موجودة."
+
+#: src/Admin/Status.php:101
+msgid "API connection"
+msgstr "الاتصال بالواجهة"
+
+#. translators: 1: environment, 2: response time.
+#: src/Admin/Status.php:105
+#, php-format
+msgid "%1$s · %2$d ms"
+msgstr "%1$s · %2$d مللي ثانية"
+
+#: src/Admin/Status.php:113
+#: src/Admin/Status.php:123
+#: src/Gateway/Gateway.php:133
+msgid "Webhooks"
+msgstr "إشعارات Webhook"
+
+#. translators: %s: human time difference, e.g. "5 mins".
+#: src/Admin/Status.php:115
+#, php-format
+msgid "Last event %s ago"
+msgstr "آخر إشعار قبل %s"
+
+#: src/Admin/Status.php:116
+msgid "unsigned"
+msgstr "غير موقّع"
+
+#: src/Admin/Status.php:124
+msgid "Waiting for first event"
+msgstr "بانتظار أول إشعار"
+
+#: src/Admin/Status.php:124
+msgid "Not configured"
+msgstr "غير مُعدّ"
+
+#: src/Admin/Status.php:125
+msgid "Secret saved"
+msgstr "السر محفوظ"
+
+#: src/Admin/Status.php:125
+msgid "Recommended for production"
+msgstr "يوصى به للبيئة الفعلية"
+
+#: src/Admin/Status.php:133
+msgid "Store currency"
+msgstr "عملة المتجر"
+
+#: src/Admin/Status.php:135
+msgid "Omani Rial — supported"
+msgstr "الريال العماني – مدعوم"
+
+#: src/Admin/Status.php:135
+msgid "Thawani accepts OMR only"
+msgstr "تقبل ثواني الريال العماني فقط"
+
+#: src/Admin/Status.php:142
+#: src/Gateway/Gateway.php:175
+msgid "Saved cards"
+msgstr "البطاقات المحفوظة"
+
+#: src/Admin/Status.php:143
+msgid "Enabled"
+msgstr "مفعّل"
+
+#: src/Admin/Status.php:143
+msgid "Disabled"
+msgstr "معطّل"
+
+#: src/Admin/Status.php:144
+msgid "Subscriptions active"
+msgstr "الاشتراكات مفعّلة"
+
+#: src/Admin/Status.php:144
+msgid "Subscriptions plugin not detected"
+msgstr "إضافة الاشتراكات غير مثبتة"
+
 #: src/Admin/TransactionsPage.php:40
-#: src/Admin/TransactionsPage.php:99
+#: src/Admin/TransactionsPage.php:113
 msgid "Thawani Transactions"
 msgstr "معاملات ثواني"
 
@@ -218,51 +334,108 @@ msgstr "معاملات ثواني"
 msgid "API keys for this environment are not configured."
 msgstr "لم تُضبط مفاتيح API لهذه البيئة."
 
-#: src/Admin/TransactionsPage.php:110
+#: src/Admin/TransactionsPage.php:119
+msgid "Live checkout sessions from the Thawani API, linked to your orders."
+msgstr "جلسات الدفع مباشرة من واجهة ثواني، مرتبطة بطلبات متجرك."
+
+#: src/Admin/TransactionsPage.php:133
+msgid "Collected"
+msgstr "المحصّل"
+
+#: src/Admin/TransactionsPage.php:135
+msgid "Paid sessions in this view"
+msgstr "الجلسات المدفوعة في هذا العرض"
+
+#: src/Admin/TransactionsPage.php:140
+msgid "Completed payments"
+msgstr "مدفوعات مكتملة"
+
+#: src/Admin/TransactionsPage.php:145
+msgid "Open payment links"
+msgstr "روابط دفع مفتوحة"
+
+#: src/Admin/TransactionsPage.php:148
+#: src/Admin/TransactionsPage.php:160
+#: src/Admin/TransactionsPage.php:316
+msgid "Cancelled"
+msgstr "ملغى"
+
+#: src/Admin/TransactionsPage.php:150
+msgid "Cancelled or expired"
+msgstr "ملغاة أو منتهية"
+
+#: src/Admin/TransactionsPage.php:156
+msgid "Filter by status"
+msgstr "تصفية حسب الحالة"
+
+#: src/Admin/TransactionsPage.php:157
+msgid "All"
+msgstr "الكل"
+
+#: src/Admin/TransactionsPage.php:159
+#: src/Admin/TransactionsPage.php:315
+msgid "Unpaid"
+msgstr "غير مدفوع"
+
+#: src/Admin/TransactionsPage.php:163
+msgid "Search order, customer or invoice…"
+msgstr "ابحث برقم الطلب أو العميل أو الفاتورة…"
+
+#: src/Admin/TransactionsPage.php:163
+msgid "Search transactions"
+msgstr "البحث في المعاملات"
+
+#: src/Admin/TransactionsPage.php:165
 msgid "This store"
 msgstr "هذا المتجر"
 
-#: src/Admin/TransactionsPage.php:111
+#: src/Admin/TransactionsPage.php:166
 msgid "Entire Thawani account"
 msgstr "حساب ثواني بالكامل"
 
+#: src/Admin/TransactionsPage.php:179
+msgid "Order"
+msgstr "الطلب"
+
+#: src/Admin/TransactionsPage.php:181
+msgid "Created"
+msgstr "التاريخ"
+
+#: src/Admin/TransactionsPage.php:182
+msgid "Status"
+msgstr "الحالة"
+
+#: src/Admin/TransactionsPage.php:183
+msgid "Amount"
+msgstr "المبلغ"
+
+#: src/Admin/TransactionsPage.php:199
+msgid "No checkout sessions yet."
+msgstr "لا توجد جلسات دفع حتى الآن."
+
 #. translators: %d: number of sessions scanned.
-#: src/Admin/TransactionsPage.php:119
+#: src/Admin/TransactionsPage.php:207
 #, php-format
 msgid "Sessions created by this store among the %d most recent in the Thawani account."
 msgstr "جلسات الدفع التي أنشأها هذا المتجر ضمن أحدث %d جلسة في حساب ثواني."
 
-#: src/Admin/TransactionsPage.php:131
-msgid "Created"
-msgstr "التاريخ"
-
-#: src/Admin/TransactionsPage.php:133
-msgid "Order"
-msgstr "الطلب"
-
-#: src/Admin/TransactionsPage.php:136
-msgid "Status"
-msgstr "الحالة"
-
-#: src/Admin/TransactionsPage.php:141
-msgid "No checkout sessions yet."
-msgstr "لا توجد جلسات دفع حتى الآن."
-
-#: src/Admin/TransactionsPage.php:157
+#: src/Admin/TransactionsPage.php:214
 msgid "Newer"
 msgstr "الأحدث"
 
-#: src/Admin/TransactionsPage.php:160
+#: src/Admin/TransactionsPage.php:217
 msgid "Older"
 msgstr "الأقدم"
 
-#: src/Admin/TransactionsPage.php:236
-msgid "Unpaid"
-msgstr "غير مدفوع"
+#: src/Admin/TransactionsPage.php:252
+msgid "Guest"
+msgstr "زائر"
 
-#: src/Admin/TransactionsPage.php:237
-msgid "Cancelled"
-msgstr "ملغى"
+#. translators: %s: human time difference.
+#: src/Admin/TransactionsPage.php:268
+#, php-format
+msgid "%s ago"
+msgstr "قبل %s"
 
 #: src/Api/ApiException.php:81
 msgid "Your card was declined. Please try another card."
@@ -320,93 +493,93 @@ msgstr "الشحن: %s"
 msgid "Accept Omani debit and credit cards through the secure Thawani hosted checkout. Supports saved cards, refunds from the order screen, signed webhooks and automatic reconciliation."
 msgstr "اقبل البطاقات البنكية والائتمانية العمانية عبر صفحة الدفع الآمنة المستضافة لدى ثواني. تدعم الإضافة البطاقات المحفوظة، والاسترداد من شاشة الطلب، وإشعارات Webhook الموقعة، والمطابقة التلقائية."
 
-#: src/Gateway/Gateway.php:62
+#: src/Gateway/Gateway.php:58
 msgid "General"
 msgstr "عام"
 
-#: src/Gateway/Gateway.php:66
+#: src/Gateway/Gateway.php:60
+msgid "What customers see at checkout."
+msgstr "ما يظهر للعملاء في صفحة الدفع."
+
+#: src/Gateway/Gateway.php:64
 msgid "Enable / Disable"
 msgstr "تفعيل / تعطيل"
 
-#: src/Gateway/Gateway.php:67
+#: src/Gateway/Gateway.php:65
 msgid "Enable Thawani Pay at checkout"
 msgstr "فعّل ثواني في صفحة الدفع"
 
-#: src/Gateway/Gateway.php:72
+#: src/Gateway/Gateway.php:70
 msgid "Title"
 msgstr "العنوان"
 
-#: src/Gateway/Gateway.php:74
+#: src/Gateway/Gateway.php:72
 msgid "Payment method name shown to customers at checkout."
 msgstr "اسم وسيلة الدفع الذي يظهر للعملاء في صفحة الدفع."
 
-#: src/Gateway/Gateway.php:75
+#: src/Gateway/Gateway.php:73
 msgid "Debit / Credit Card (Thawani)"
 msgstr "بطاقة بنكية / ائتمانية (ثواني)"
 
-#: src/Gateway/Gateway.php:79
+#: src/Gateway/Gateway.php:77
 msgid "Description"
 msgstr "الوصف"
 
-#: src/Gateway/Gateway.php:81
+#: src/Gateway/Gateway.php:79
 msgid "Thawani requires the checkout to state that card payments are accepted."
 msgstr "تشترط ثواني أن توضح صفحة الدفع قبول الدفع بالبطاقات."
 
-#: src/Gateway/Gateway.php:82
+#: src/Gateway/Gateway.php:80
 msgid "Pay securely with your debit or credit card. You will be redirected to Thawani to complete the payment."
 msgstr "ادفع بأمان ببطاقتك البنكية أو الائتمانية. ستنتقل إلى ثواني لإتمام الدفع."
 
-#: src/Gateway/Gateway.php:86
+#: src/Gateway/Gateway.php:84
 msgid "Card logos"
 msgstr "شعارات البطاقات"
 
-#: src/Gateway/Gateway.php:87
+#: src/Gateway/Gateway.php:85
 msgid "Show Visa and Mastercard logos next to the title"
 msgstr "اعرض شعاري Visa وMastercard بجوار العنوان"
 
-#: src/Gateway/Gateway.php:93
+#: src/Gateway/Gateway.php:91
 msgid "API credentials"
 msgstr "بيانات الربط (API)"
 
-#: src/Gateway/Gateway.php:95
+#: src/Gateway/Gateway.php:94
 msgid "Generate your keys in the Thawani merchant portal under Integration Keys. The sandbox keys below are the public test keys from the Thawani documentation."
 msgstr "أنشئ مفاتيحك من بوابة التاجر في ثواني ضمن Integration Keys. المفاتيح التجريبية أدناه هي مفاتيح الاختبار العامة المنشورة في توثيق ثواني."
 
-#: src/Gateway/Gateway.php:98
+#: src/Gateway/Gateway.php:97
 msgid "Sandbox mode"
 msgstr "البيئة التجريبية"
 
-#: src/Gateway/Gateway.php:99
+#: src/Gateway/Gateway.php:98
 msgid "Use the Thawani UAT sandbox (no real money is charged)"
 msgstr "استخدم بيئة ثواني التجريبية UAT (لا تُخصم مبالغ حقيقية)"
 
-#: src/Gateway/Gateway.php:102
+#: src/Gateway/Gateway.php:101
 msgid "Turn this off only after Thawani has approved your integration and issued production keys."
 msgstr "لا تعطّل هذا الخيار إلا بعد اعتماد ثواني للربط وإصدار مفاتيح البيئة الفعلية."
 
-#: src/Gateway/Gateway.php:105
+#: src/Gateway/Gateway.php:104
 msgid "Sandbox secret key"
 msgstr "المفتاح السري التجريبي"
 
-#: src/Gateway/Gateway.php:111
+#: src/Gateway/Gateway.php:110
 msgid "Sandbox publishable key"
 msgstr "المفتاح العام التجريبي"
 
-#: src/Gateway/Gateway.php:117
+#: src/Gateway/Gateway.php:116
 msgid "Live secret key"
 msgstr "المفتاح السري الفعلي"
 
-#: src/Gateway/Gateway.php:123
+#: src/Gateway/Gateway.php:122
 msgid "Live publishable key"
 msgstr "المفتاح العام الفعلي"
 
-#: src/Gateway/Gateway.php:129
+#: src/Gateway/Gateway.php:128
 msgid "Connection"
 msgstr "الاتصال"
-
-#: src/Gateway/Gateway.php:134
-msgid "Webhooks"
-msgstr "إشعارات Webhook"
 
 #: src/Gateway/Gateway.php:136
 msgid "Webhooks let Thawani notify your store instantly, even if the customer closes the browser before returning. Paste this URL in the merchant portal and copy the webhook secret back here."
@@ -433,173 +606,173 @@ msgstr "سر Webhook الفعلي"
 msgid "Checkout experience"
 msgstr "تجربة الدفع"
 
-#: src/Gateway/Gateway.php:162
+#: src/Gateway/Gateway.php:160
+msgid "How orders appear on the Thawani page and how long payment links stay valid."
+msgstr "طريقة عرض الطلب في صفحة ثواني ومدة صلاحية روابط الدفع."
+
+#: src/Gateway/Gateway.php:164
 msgid "Order summary on Thawani"
 msgstr "ملخص الطلب في ثواني"
 
-#: src/Gateway/Gateway.php:166
+#: src/Gateway/Gateway.php:168
 msgid "Itemised — show every product, shipping and fee"
 msgstr "مفصّل – يعرض كل منتج ورسوم الشحن والرسوم الأخرى"
 
-#: src/Gateway/Gateway.php:167
+#: src/Gateway/Gateway.php:169
 msgid "Single line — \"Order #123\" with the total"
 msgstr "سطر واحد – «الطلب رقم 123» مع الإجمالي"
 
-#: src/Gateway/Gateway.php:169
+#: src/Gateway/Gateway.php:171
 msgid "Itemised mode falls back to a single line automatically whenever the lines cannot add up to the exact total (e.g. fractional baisa or negative fees)."
 msgstr "يتحول الوضع المفصّل تلقائيا إلى سطر واحد متى تعذر أن يطابق مجموع البنود الإجمالي بدقة، مثل كسور البيسة أو الرسوم السالبة."
 
-#: src/Gateway/Gateway.php:173
-msgid "Saved cards"
-msgstr "البطاقات المحفوظة"
-
-#: src/Gateway/Gateway.php:174
+#: src/Gateway/Gateway.php:176
 msgid "Let logged-in customers save cards at Thawani and pay with them next time"
 msgstr "اسمح للعملاء المسجلين بحفظ بطاقاتهم لدى ثواني والدفع بها لاحقا"
 
-#: src/Gateway/Gateway.php:177
+#: src/Gateway/Gateway.php:179
 msgid "Card details are stored by Thawani, never on your server."
 msgstr "تحفظ ثواني بيانات البطاقات، ولا تُخزن على خادمك إطلاقا."
 
-#: src/Gateway/Gateway.php:180
+#: src/Gateway/Gateway.php:182
 msgid "Payment link lifetime"
 msgstr "مدة صلاحية رابط الدفع"
 
-#: src/Gateway/Gateway.php:183
+#: src/Gateway/Gateway.php:185
 msgid "Minutes before an unpaid Thawani checkout session expires (30 – 10080)."
 msgstr "عدد الدقائق قبل انتهاء صلاحية جلسة الدفع غير المدفوعة (30 – 10080)."
 
-#: src/Gateway/Gateway.php:192
+#: src/Gateway/Gateway.php:194
 msgid "Reference prefix"
 msgstr "بادئة المرجع"
 
-#: src/Gateway/Gateway.php:195
+#: src/Gateway/Gateway.php:197
 msgid "Prepended to every client_reference_id. Use a different prefix per store if several stores share one Thawani account."
 msgstr "تُضاف قبل كل client_reference_id. استخدم بادئة مختلفة لكل متجر إذا اشتركت عدة متاجر في حساب ثواني واحد."
 
-#: src/Gateway/Gateway.php:200
+#: src/Gateway/Gateway.php:202
 msgid "Advanced"
 msgstr "متقدم"
 
 #: src/Gateway/Gateway.php:204
+msgid "Troubleshooting and clean-up."
+msgstr "التشخيص والتنظيف."
+
+#: src/Gateway/Gateway.php:208
 msgid "Debug log"
 msgstr "سجل التشخيص"
 
-#: src/Gateway/Gateway.php:205
+#: src/Gateway/Gateway.php:209
 msgid "Log API requests and responses"
 msgstr "سجّل طلبات API واستجاباتها"
 
 #. translators: %s: link to the logs screen.
-#: src/Gateway/Gateway.php:209
+#: src/Gateway/Gateway.php:213
 #, php-format
 msgid "Errors are always logged. View logs under %s (source: thawani-pay). Keys, emails and phone numbers are masked."
 msgstr "تُسجل الأخطاء دائما. اعرض السجلات من %s (المصدر: thawani-pay). تُخفى المفاتيح والبريد الإلكتروني وأرقام الهواتف."
 
 #. translators: %s: link to the logs screen.
-#: src/Gateway/Gateway.php:209
+#: src/Gateway/Gateway.php:213
 msgid "WooCommerce → Status → Logs"
 msgstr "WooCommerce ← الحالة ← السجلات"
 
-#: src/Gateway/Gateway.php:212
+#: src/Gateway/Gateway.php:216
 msgid "Uninstall"
 msgstr "إلغاء التثبيت"
 
-#: src/Gateway/Gateway.php:213
+#: src/Gateway/Gateway.php:217
 msgid "Delete plugin settings and saved-card references when the plugin is deleted"
 msgstr "احذف إعدادات الإضافة ومراجع البطاقات المحفوظة عند حذف الإضافة"
 
-#: src/Gateway/Gateway.php:263
+#: src/Gateway/Gateway.php:267
 #: assets/js/blocks.js:51
 msgid "Sandbox mode — use test card 4242 4242 4242 4242, any future expiry, any CVV and OTP 1234."
 msgstr "البيئة التجريبية – استخدم البطاقة 4242 4242 4242 4242 بأي تاريخ انتهاء مستقبلي وأي رمز CVV، ورمز التحقق 1234."
 
-#: src/Gateway/Gateway.php:301
+#: src/Gateway/Gateway.php:305
 msgid "Save my card securely with Thawani for faster checkout"
 msgstr "احفظ بطاقتي بأمان لدى ثواني لدفع أسرع"
 
-#: src/Gateway/Gateway.php:334
+#: src/Gateway/Gateway.php:338
 msgid "That saved card is not available. Please choose another payment method."
 msgstr "هذه البطاقة المحفوظة غير متاحة. اختر وسيلة دفع أخرى."
 
 #. translators: %s: error message from Thawani.
-#: src/Gateway/Gateway.php:363
+#: src/Gateway/Gateway.php:367
 #, php-format
 msgid "Thawani could not start the payment: %s"
 msgstr "تعذر على ثواني بدء الدفع: %s"
 
-#: src/Gateway/Gateway.php:382
+#: src/Gateway/Gateway.php:386
 msgid "Order not found."
 msgstr "الطلب غير موجود."
 
-#: src/Gateway/Gateway.php:393
+#: src/Gateway/Gateway.php:397
 msgid "This order has no Thawani payment ID, so it cannot be refunded automatically."
 msgstr "لا يحمل هذا الطلب رقم دفعة من ثواني، لذا يتعذر استرداده تلقائيا."
 
-#: src/Gateway/Gateway.php:398
+#: src/Gateway/Gateway.php:402
 msgid "Refund amount must be greater than zero."
 msgstr "يجب أن يكون مبلغ الاسترداد أكبر من صفر."
 
 #. translators: %s: order number.
-#: src/Gateway/Gateway.php:408
+#: src/Gateway/Gateway.php:412
 #, php-format
 msgid "Refund for order #%s"
 msgstr "استرداد للطلب رقم %s"
 
-#: src/Gateway/Gateway.php:419
+#: src/Gateway/Gateway.php:423
 msgid "Thawani reports this payment is already fully refunded."
 msgstr "تفيد ثواني بأن هذه الدفعة مستردة بالكامل مسبقا."
 
 #. translators: %s: error message.
-#: src/Gateway/Gateway.php:423
+#: src/Gateway/Gateway.php:427
 #, php-format
 msgid "Thawani refund failed: %s"
 msgstr "فشل الاسترداد عبر ثواني: %s"
 
 #. translators: %s: refund id.
-#: src/Gateway/Gateway.php:431
+#: src/Gateway/Gateway.php:435
 #, php-format
 msgid "Thawani declined the refund (%s)."
 msgstr "رفضت ثواني الاسترداد (%s)."
 
 #. translators: 1: amount, 2: refund id, 3: status.
-#: src/Gateway/Gateway.php:447
+#: src/Gateway/Gateway.php:451
 #, php-format
 msgid "Refunded %1$s through Thawani. Refund ID: %2$s (%3$s)."
 msgstr "استُرد مبلغ %1$s عبر ثواني. رقم الاسترداد: %2$s (%3$s)."
 
-#: src/Gateway/Gateway.php:493
-msgid "Hosted card checkout for Oman — saved cards, refunds, webhooks and automatic reconciliation."
-msgstr "صفحة دفع بالبطاقات مستضافة للسوق العمانية: بطاقات محفوظة، واسترداد، وإشعارات Webhook، ومطابقة تلقائية."
+#: src/Gateway/Gateway.php:502
+msgid "Card payments for Oman — hosted checkout, saved cards, subscriptions and refunds."
+msgstr "مدفوعات البطاقات في عُمان: صفحة دفع مستضافة، وبطاقات محفوظة، واشتراكات، واسترداد."
 
-#: src/Gateway/Gateway.php:495
-msgid "View transactions"
-msgstr "عرض المعاملات"
+#: src/Gateway/Gateway.php:523
+msgid "Settings sections"
+msgstr "أقسام الإعدادات"
 
-#: src/Gateway/Gateway.php:497
-msgid "Thawani API docs"
-msgstr "توثيق واجهة ثواني"
-
-#: src/Gateway/Gateway.php:499
+#: src/Gateway/Gateway.php:530
 msgid "Developed by Afaq Innovation and AI"
 msgstr "تطوير آفاق الابتكار والذكاء الاصطناعي"
 
-#: src/Gateway/Gateway.php:520
+#: src/Gateway/Gateway.php:599
 msgid "Test sandbox keys"
 msgstr "اختبار المفاتيح التجريبية"
 
-#: src/Gateway/Gateway.php:521
+#: src/Gateway/Gateway.php:600
 msgid "Test live keys"
 msgstr "اختبار المفاتيح الفعلية"
 
-#: src/Gateway/Gateway.php:523
+#: src/Gateway/Gateway.php:602
 msgid "Checks the keys currently typed in the form against the Thawani API — no need to save first."
 msgstr "يتحقق من المفاتيح المكتوبة في النموذج مباشرة عبر واجهة ثواني، دون الحاجة إلى الحفظ أولا."
 
-#: src/Gateway/Gateway.php:546
+#: src/Gateway/Gateway.php:625
 msgid "Copy"
 msgstr "نسخ"
 
-#: src/Gateway/Gateway.php:549
+#: src/Gateway/Gateway.php:628
 msgid "Thawani requires HTTPS in production. This URL is not reachable from the internet while you develop locally — payments are still confirmed on return and by the background reconciler."
 msgstr "تشترط ثواني HTTPS في البيئة الفعلية. لا يمكن الوصول إلى هذا الرابط من الإنترنت أثناء التطوير المحلي، ومع ذلك تُؤكد المدفوعات عند عودة العميل وعبر المطابقة الدورية في الخلفية."
 
@@ -661,6 +834,10 @@ msgstr "يستغرق ذلك عادة بضع ثوانٍ. أبقِ الصفحة م
 msgid "Payment details"
 msgstr "تفاصيل الدفع"
 
+#: src/Gateway/ThankYou.php:144
+msgid "Card"
+msgstr "البطاقة"
+
 #: src/Gateway/ThankYou.php:149
 msgid "Processed by"
 msgstr "المعالجة عبر"
@@ -710,7 +887,7 @@ msgid "Renewal payment link sent to the customer."
 msgstr "أُرسل رابط سداد التجديد إلى العميل."
 
 #. translators: 1: masked card, 2: reason.
-#: src/Webhooks/WebhookController.php:121
+#: src/Webhooks/WebhookController.php:123
 #, php-format
 msgid "A Thawani payment attempt failed (card %1$s). %2$s The customer can retry on the same payment page."
 msgstr "فشلت محاولة دفع عبر ثواني (البطاقة %1$s). %2$s يمكن للعميل إعادة المحاولة من صفحة الدفع نفسها."

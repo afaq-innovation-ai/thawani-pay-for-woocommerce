@@ -4,7 +4,7 @@ Tags: thawani, oman, payment gateway, subscriptions, omr
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,11 @@ At Thawani. WooCommerce only keeps the card reference, brand, last four digits a
 7. Transactions screen.
 
 == Changelog ==
+
+= 1.2.0 =
+* Redesigned settings screen with a live health panel, section navigation and toggles.
+* New transactions dashboard with totals, status filters and search.
+* Redesigned order panel with amount, status, card brand and refunds.
 
 = 1.1.0 =
 * Subscriptions for WooCommerce (WP Swings) support: saved card at sign-up, renewal charges, payment link when OTP is required.

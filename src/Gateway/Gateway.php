@@ -54,13 +54,11 @@ class Gateway extends \WC_Payment_Gateway {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'intro'                => array(
-				'type' => 'thawani_intro',
-			),
-
 			'section_general'      => array(
-				'title' => __( 'General', 'thawani-pay-for-woocommerce' ),
-				'type'  => 'title',
+				'title'       => __( 'General', 'thawani-pay-for-woocommerce' ),
+				'type'        => 'thawani_section',
+				'description' => __( 'What customers see at checkout.', 'thawani-pay-for-woocommerce' ),
+				'icon'        => 'general',
 			),
 			'enabled'              => array(
 				'title'   => __( 'Enable / Disable', 'thawani-pay-for-woocommerce' ),
@@ -91,7 +89,8 @@ class Gateway extends \WC_Payment_Gateway {
 
 			'section_api'          => array(
 				'title'       => __( 'API credentials', 'thawani-pay-for-woocommerce' ),
-				'type'        => 'title',
+				'type'        => 'thawani_section',
+				'icon'        => 'key',
 				'description' => __( 'Generate your keys in the Thawani merchant portal under Integration Keys. The sandbox keys below are the public test keys from the Thawani documentation.', 'thawani-pay-for-woocommerce' ),
 			),
 			'testmode'             => array(
@@ -132,7 +131,8 @@ class Gateway extends \WC_Payment_Gateway {
 
 			'section_webhooks'     => array(
 				'title'       => __( 'Webhooks', 'thawani-pay-for-woocommerce' ),
-				'type'        => 'title',
+				'type'        => 'thawani_section',
+				'icon'        => 'bolt',
 				'description' => __( 'Webhooks let Thawani notify your store instantly, even if the customer closes the browser before returning. Paste this URL in the merchant portal and copy the webhook secret back here.', 'thawani-pay-for-woocommerce' ),
 			),
 			'webhook_url'          => array(
@@ -155,8 +155,10 @@ class Gateway extends \WC_Payment_Gateway {
 			),
 
 			'section_checkout'     => array(
-				'title' => __( 'Checkout experience', 'thawani-pay-for-woocommerce' ),
-				'type'  => 'title',
+				'title'       => __( 'Checkout experience', 'thawani-pay-for-woocommerce' ),
+				'type'        => 'thawani_section',
+				'description' => __( 'How orders appear on the Thawani page and how long payment links stay valid.', 'thawani-pay-for-woocommerce' ),
+				'icon'        => 'cart',
 			),
 			'line_items'           => array(
 				'title'       => __( 'Order summary on Thawani', 'thawani-pay-for-woocommerce' ),
@@ -197,8 +199,10 @@ class Gateway extends \WC_Payment_Gateway {
 			),
 
 			'section_advanced'     => array(
-				'title' => __( 'Advanced', 'thawani-pay-for-woocommerce' ),
-				'type'  => 'title',
+				'title'       => __( 'Advanced', 'thawani-pay-for-woocommerce' ),
+				'type'        => 'thawani_section',
+				'description' => __( 'Troubleshooting and clean-up.', 'thawani-pay-for-woocommerce' ),
+				'icon'        => 'wrench',
 			),
 			'debug'                => array(
 				'title'       => __( 'Debug log', 'thawani-pay-for-woocommerce' ),
@@ -473,36 +477,111 @@ class Gateway extends \WC_Payment_Gateway {
 	// Custom settings field renderers.
 
 	/**
-	 * Intro card at the top of the settings page.
+	 * Settings screen: header with live status, section navigation and card layout.
+	 */
+	public function admin_options() {
+		$mode     = Settings::mode();
+		$sections = array();
+		foreach ( $this->get_form_fields() as $key => $field ) {
+			if ( 'thawani_section' === ( $field['type'] ?? '' ) ) {
+				$sections[ $key ] = $field;
+			}
+		}
+
+		$this->section_open = false;
+		?>
+		<div class="tp-settings">
+			<header class="tp-hero">
+				<div class="tp-hero__brand">
+					<img src="<?php echo esc_url( THAWANI_PAY_URL . 'assets/images/thawani-pay.svg' ); ?>" alt="" width="52" height="52" />
+					<div>
+						<h2 class="tp-hero__title">
+							<?php esc_html_e( 'Thawani Pay', 'thawani-pay-for-woocommerce' ); ?>
+							<span class="tp-badge tp-badge--<?php echo esc_attr( $mode ); ?>"><?php echo esc_html( Settings::is_test( $mode ) ? __( 'Sandbox', 'thawani-pay-for-woocommerce' ) : __( 'Live', 'thawani-pay-for-woocommerce' ) ); ?></span>
+						</h2>
+						<p class="tp-hero__sub"><?php esc_html_e( 'Card payments for Oman — hosted checkout, saved cards, subscriptions and refunds.', 'thawani-pay-for-woocommerce' ); ?></p>
+					</div>
+				</div>
+				<div class="tp-hero__actions">
+					<a class="tp-btn tp-btn--ghost" href="<?php echo esc_url( admin_url( 'admin.php?page=thawani-pay-transactions' ) ); ?>"><?php esc_html_e( 'Transactions', 'thawani-pay-for-woocommerce' ); ?></a>
+					<a class="tp-btn tp-btn--ghost" href="https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce#readme" target="_blank" rel="noopener"><?php esc_html_e( 'Documentation', 'thawani-pay-for-woocommerce' ); ?></a>
+				</div>
+			</header>
+
+			<div class="tp-status">
+				<?php foreach ( \AfaqInnovation\ThawaniPay\Admin\Status::tiles() as $tile ) : ?>
+					<div class="tp-tile tp-tile--<?php echo esc_attr( $tile['state'] ); ?>" data-tile="<?php echo esc_attr( $tile['id'] ); ?>">
+						<span class="tp-tile__dot" aria-hidden="true"></span>
+						<span class="tp-tile__label"><?php echo esc_html( $tile['label'] ); ?></span>
+						<strong class="tp-tile__value"><?php echo esc_html( $tile['value'] ); ?></strong>
+						<span class="tp-tile__hint"><?php echo esc_html( $tile['hint'] ); ?></span>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="tp-layout">
+				<nav class="tp-nav" aria-label="<?php esc_attr_e( 'Settings sections', 'thawani-pay-for-woocommerce' ); ?>">
+					<?php foreach ( $sections as $key => $section ) : ?>
+						<a href="#tp-<?php echo esc_attr( $key ); ?>" class="tp-nav__link">
+							<?php echo self::icon( (string) ( $section['icon'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
+							<span><?php echo esc_html( $section['title'] ); ?></span>
+						</a>
+					<?php endforeach; ?>
+					<p class="tp-nav__by"><?php esc_html_e( 'Developed by Afaq Innovation and AI', 'thawani-pay-for-woocommerce' ); ?><br /><span>v<?php echo esc_html( THAWANI_PAY_VERSION ); ?></span></p>
+				</nav>
+				<div class="tp-sections">
+					<table class="form-table tp-hidden"><?php echo $this->generate_settings_html( $this->get_form_fields(), false ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce escapes each field. ?></table>
+					<?php echo $this->section_open ? '</section>' : ''; ?>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Tracks whether a section card is open while rendering.
+	 *
+	 * @var bool
+	 */
+	private $section_open = false;
+
+	/**
+	 * Section card (closes the previous card and opens a new one).
 	 *
 	 * @param string $key  Field key.
 	 * @param array  $data Field data.
 	 */
-	public function generate_thawani_intro_html( $key, $data ) {
-		$mode_label = Settings::is_test() ? __( 'Sandbox', 'thawani-pay-for-woocommerce' ) : __( 'Live', 'thawani-pay-for-woocommerce' );
+	public function generate_thawani_section_html( $key, $data ) {
+		$html  = '</table>';
+		$html .= $this->section_open ? '</section>' : '';
+		$html .= '<section class="tp-card" id="tp-' . esc_attr( $key ) . '">';
+		$html .= '<div class="tp-card__head"><span class="tp-card__icon">' . self::icon( (string) ( $data['icon'] ?? '' ) ) . '</span><div>';
+		$html .= '<h3 class="tp-card__title">' . esc_html( $data['title'] ?? '' ) . '</h3>';
+		if ( ! empty( $data['description'] ) ) {
+			$html .= '<p class="tp-card__desc">' . wp_kses_post( $data['description'] ) . '</p>';
+		}
+		$html .= '</div></div><table class="form-table">';
 
-		ob_start();
-		?>
-		<tr valign="top"><td colspan="2" class="thawani-pay-intro-cell">
-			<div class="thawani-pay-intro">
-				<img class="thawani-pay-intro__logo" src="<?php echo esc_url( THAWANI_PAY_URL . 'assets/images/thawani-pay.svg' ); ?>" alt="" width="48" height="48" />
-				<div>
-					<h3><?php esc_html_e( 'Thawani Pay for WooCommerce', 'thawani-pay-for-woocommerce' ); ?>
-						<span class="thawani-pay-badge thawani-pay-badge--<?php echo esc_attr( Settings::mode() ); ?>"><?php echo esc_html( $mode_label ); ?></span>
-					</h3>
-					<p><?php esc_html_e( 'Hosted card checkout for Oman — saved cards, refunds, webhooks and automatic reconciliation.', 'thawani-pay-for-woocommerce' ); ?></p>
-					<p class="thawani-pay-intro__links">
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=thawani-pay-transactions' ) ); ?>"><?php esc_html_e( 'View transactions', 'thawani-pay-for-woocommerce' ); ?></a>
-						<span aria-hidden="true">·</span>
-						<a href="https://thawani-technologies.stoplight.io/docs/thawani-ecommerce-api" target="_blank" rel="noopener"><?php esc_html_e( 'Thawani API docs', 'thawani-pay-for-woocommerce' ); ?></a>
-						<span aria-hidden="true">·</span>
-						<span class="thawani-pay-intro__by"><?php esc_html_e( 'Developed by Afaq Innovation and AI', 'thawani-pay-for-woocommerce' ); ?></span>
-					</p>
-				</div>
-			</div>
-		</td></tr>
-		<?php
-		return (string) ob_get_clean();
+		$this->section_open = true;
+
+		return $html;
+	}
+
+	/**
+	 * Inline icons (stroke style, currentColor).
+	 *
+	 * @param string $name Icon name.
+	 */
+	private static function icon( string $name ): string {
+		$paths = array(
+			'general' => '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+			'key'     => '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/>',
+			'bolt'    => '<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
+			'cart'    => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>',
+			'wrench'  => '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6z"/>',
+		);
+
+		return '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ( $paths[ $name ] ?? '' ) . '</svg>';
 	}
 
 	/**

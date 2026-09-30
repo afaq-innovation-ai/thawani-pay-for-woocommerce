@@ -1,7 +1,7 @@
 // End-to-end: subscribe with Thawani → renewal → customer confirms the renewal → subscription re-activated.
 // Requires "Subscriptions for WooCommerce" (WP Swings) active and a subscription product (PRODUCT env, default 1029).
 import { execSync } from 'node:child_process';
-import { launch, SITE, shot, login, fillBlocksCheckout, payOnThawani, enterOtp } from './lib.mjs';
+import { launch, SITE, shot, login, fillBlocksCheckout, payOnThawani, enterOtp, orderPanels } from './lib.mjs';
 
 const PRODUCT = process.env.PRODUCT || '1029';
 const wp = (php) => execSync(`docker compose -f ../../dev/docker-compose.yml exec -T cli wp eval '${php.replace(/'/g, "'\\''")}'`, { encoding: 'utf8' }).replace(/sendmail.*\n/g, '').trim();
@@ -13,22 +13,7 @@ async function hide(page) {
 }
 
 async function adminRenewalShot(page) {
-  // Keep only the Thawani box and the payment-related notes, side by side.
-  await page.addStyleTag({ content: '#woocommerce-order-notes .add_note,.handle-actions{display:none!important}' });
-  await page.evaluate(() => document.querySelectorAll('#woocommerce-order-notes li.note').forEach((li) => { if (/Email .* sent/.test(li.innerText)) li.remove(); }));
-  await page.evaluate(() => {
-    const wrap = document.createElement('div');
-    wrap.id = 'thawani-shot';
-    wrap.style.cssText = 'position:absolute;left:0;top:0;z-index:99999;display:flex;gap:18px;align-items:flex-start;padding:18px;background:#f0f0f1;width:980px';
-    const box = document.querySelector('#thawani-pay-order').cloneNode(true);
-    const notes = document.querySelector('#woocommerce-order-notes').cloneNode(true);
-    box.style.cssText = 'flex:0 0 360px;margin:0;background:#fff';
-    notes.style.cssText = 'flex:1;margin:0;background:#fff';
-    wrap.append(box, notes);
-    document.body.appendChild(wrap);
-    window.scrollTo(0, 0);
-  });
-  await shot(page, '26-renewal-order-admin', { locator: page.locator('#thawani-shot') });
+  await shot(page, '26-renewal-order-admin', { locator: await orderPanels(page) });
 }
 
 if (phase === 'admin' && process.env.RENEWAL) {
@@ -102,7 +87,7 @@ if (phase === 'all' || phase === 'renew') {
     const m = await launch();
     await m.page.setViewportSize({ width: 760, height: 1000 });
     await m.page.goto(`http://localhost:8026/view/${mail.ID}.html`);
-    await shot(m.page, '24-renewal-email', { full: true });
+    await shot(m.page, '24-renewal-email', { locator: m.page.locator('body'), frame: 'card' });
     await m.browser.close();
   } else {
     console.log('renewal email not found in Mailpit');

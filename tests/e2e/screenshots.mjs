@@ -1,7 +1,7 @@
 // Generates every screenshot used in README.md against the local dev stack + Thawani UAT.
 // It doubles as an end-to-end smoke test of the whole payment lifecycle.
 // Usage: cd tests/e2e && npm install && node screenshots.mjs
-import { launch, SITE, shot, login, fillBlocksCheckout, payOnThawani, enterOtp } from './lib.mjs';
+import { launch, SITE, shot, login, fillBlocksCheckout, payOnThawani, enterOtp, orderPanels } from './lib.mjs';
 
 const ADMIN = SITE + '/wp-admin';
 const step = (t) => console.log('\n▶', t);
@@ -42,16 +42,15 @@ if (run('admin')) {
 
   step('Settings');
   await page.goto(ADMIN + '/admin.php?page=wc-settings&tab=checkout&section=thawani');
-  await page.addStyleTag({ content: '#wpfooter{display:none}' });
-  await shot(page, '03-settings-general', { clip: { x: 160, y: 60, width: 1200, height: 840 } });
-  await page.locator('#woocommerce_thawani_testmode').scrollIntoViewIfNeeded();
-  await page.evaluate(() => window.scrollBy(0, -140));
+  await page.waitForSelector('.tp-status');
+  await shot(page, '03-settings-overview');
+  const cardTop = (id) => page.evaluate((sel) => { const el = document.querySelector(sel); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 60); }, id);
+  await cardTop('#tp-section_api');
   await page.click('.thawani-pay-test[data-mode="test"]');
   await page.waitForSelector('.thawani-pay-test-result.is-ok', { timeout: 30000 });
-  await shot(page, '04-settings-api', { clip: { x: 160, y: 0, width: 1200, height: 900 } });
-  await page.locator('#thawani-pay-webhook-url').scrollIntoViewIfNeeded();
-  await page.evaluate(() => window.scrollBy(0, -160));
-  await shot(page, '05-settings-webhooks-checkout', { clip: { x: 160, y: 0, width: 1200, height: 900 } });
+  await shot(page, '04-settings-api');
+  await cardTop('#tp-section_webhooks');
+  await shot(page, '05-settings-webhooks-checkout');
   await s.browser.close();
 }
 
@@ -64,7 +63,9 @@ if (run('refund') && process.env.ORDER) {
   await page.setViewportSize({ width: 1360, height: 1150 });
   await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
   await hideOverlays(page);
-  await shot(page, '10-admin-order', { clip: { x: 160, y: 40, width: 1200, height: 1100 } });
+  await shot(page, '10-admin-order', { locator: await orderPanels(page) });
+  await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
+  await hideOverlays(page);
   await page.click('button.refund-items');
   await page.fill('#refund_amount', '4.750');
   await page.fill('#refund_reason', 'Customer returned the beanie');
@@ -74,7 +75,7 @@ if (run('refund') && process.env.ORDER) {
   await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
   await page.waitForSelector('.note_content:has-text("Refund ID")', { timeout: 60000 });
   await hideOverlays(page);
-  await shot(page, '11-refund', { clip: { x: 160, y: 40, width: 1200, height: 1100 } });
+  await shot(page, '11-refund', { locator: await orderPanels(page) });
   await s.browser.close();
 }
 
@@ -108,7 +109,9 @@ if (run('guest')) {
   await page.setViewportSize({ width: 1360, height: 1150 });
   await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
   await hideOverlays(page);
-  await shot(page, '10-admin-order', { clip: { x: 160, y: 40, width: 1200, height: 1100 } });
+  await shot(page, '10-admin-order', { locator: await orderPanels(page) });
+  await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
+  await hideOverlays(page);
   await page.click('button.refund-items');
   await page.fill('#refund_amount', '4.750');
   await page.fill('#refund_reason', 'Customer returned the beanie');
@@ -118,7 +121,7 @@ if (run('guest')) {
   await page.goto(`${ADMIN}/admin.php?page=wc-orders&action=edit&id=${orderId}`);
   await page.waitForSelector('.note_content:has-text("Refund ID")', { timeout: 60000 });
   await hideOverlays(page);
-  await shot(page, '11-refund', { clip: { x: 160, y: 40, width: 1200, height: 1100 } });
+  await shot(page, '11-refund', { locator: await orderPanels(page) });
   await s.browser.close();
 }
 
@@ -190,7 +193,8 @@ if (run('transactions')) {
   const page = s.page;
   await login(page);
   await page.goto(ADMIN + '/admin.php?page=thawani-pay-transactions&mode=test&scope=store');
-  await shot(page, '18-transactions', { clip: { x: 160, y: 30, width: 1200, height: 620 } });
+  await page.waitForSelector('.tp-kpis');
+  await shot(page, '18-transactions');
   await s.browser.close();
 }
 
@@ -211,7 +215,8 @@ if (run('arabic')) {
   await login(page);
   await page.goto(ADMIN + '/admin.php?page=wc-settings&tab=checkout&section=thawani');
   await hideOverlays(page);
-  await shot(page, '20-arabic-settings', { clip: { x: 0, y: 60, width: 1200, height: 840 } });
+  await page.waitForSelector('.tp-status');
+  await shot(page, '20-arabic-settings');
   await s.browser.close();
   wp('site switch-language en_US');
 }

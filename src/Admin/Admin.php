@@ -50,7 +50,7 @@ final class Admin {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
-		if ( 'woocommerce_page_wc-settings' !== $hook || Gateway::ID !== $section ) {
+		if ( ! self::is_plugin_screen( $hook, $section ) ) {
 			return;
 		}
 
@@ -62,9 +62,12 @@ final class Admin {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'thawani_pay_test_connection' ),
 				'i18n'    => array(
-					'testing' => __( 'Checking…', 'thawani-pay-for-woocommerce' ),
-					'copied'  => __( 'Copied', 'thawani-pay-for-woocommerce' ),
-					'failed'  => __( 'Request failed', 'thawani-pay-for-woocommerce' ),
+					'testing'      => __( 'Checking…', 'thawani-pay-for-woocommerce' ),
+					'copied'       => __( 'Copied', 'thawani-pay-for-woocommerce' ),
+					'failed'       => __( 'Request failed', 'thawani-pay-for-woocommerce' ),
+					'connected'    => __( 'Connected', 'thawani-pay-for-woocommerce' ),
+					'notConnected' => __( 'Not connected', 'thawani-pay-for-woocommerce' ),
+					'unsaved'      => __( 'You have unsaved changes', 'thawani-pay-for-woocommerce' ),
 				),
 			)
 		);
@@ -89,22 +92,44 @@ final class Admin {
 		}
 
 		$started = microtime( true );
+		$error   = '';
 
 		try {
 			( new Client( $secret, $publishable, $mode ) )->list_sessions( 1, 0 );
 		} catch ( ApiException $e ) {
 			if ( ! $e->is_not_found() ) { // An empty account answers "not found", which still proves the key works.
-				wp_send_json_error( array( 'message' => $e->is_auth_error() ? __( 'Key rejected by Thawani.', 'thawani-pay-for-woocommerce' ) : $e->getMessage() ) );
+				$error = $e->is_auth_error() ? __( 'Key rejected by Thawani.', 'thawani-pay-for-woocommerce' ) : $e->getMessage();
 			}
+		}
+
+		$ms = (int) round( ( microtime( true ) - $started ) * 1000 );
+
+		// Refresh the status tile only when the tested keys are the saved ones.
+		if ( Settings::secret_key( $mode ) === $secret ) {
+			set_transient(
+				'thawani_pay_conn_' . $mode,
+				array(
+					'ok'      => '' === $error,
+					'ms'      => $ms,
+					'message' => $error,
+					'at'      => time(),
+				),
+				10 * MINUTE_IN_SECONDS
+			);
+		}
+
+		if ( '' !== $error ) {
+			wp_send_json_error( array( 'message' => $error ) );
 		}
 
 		wp_send_json_success(
 			array(
+				'ms'      => $ms,
 				'message' => sprintf(
 					/* translators: 1: environment, 2: response time in ms. */
 					__( 'Connected to Thawani %1$s (%2$d ms).', 'thawani-pay-for-woocommerce' ),
 					Settings::is_test( $mode ) ? __( 'sandbox', 'thawani-pay-for-woocommerce' ) : __( 'live', 'thawani-pay-for-woocommerce' ),
-					(int) round( ( microtime( true ) - $started ) * 1000 )
+					$ms
 				),
 			)
 		);
@@ -115,6 +140,14 @@ final class Admin {
 	 */
 	public static function notices(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) || ! Settings::flag( 'enabled' ) ) {
+			return;
+		}
+
+		// The plugin's own screens show the same information in their status panel.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$section = isset( $_GET['section'] ) ? sanitize_key( wp_unslash( $_GET['section'] ) ) : '';
+		$screen  = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( $screen && self::is_plugin_screen( $screen->id, $section ) ) {
 			return;
 		}
 
@@ -139,6 +172,16 @@ final class Admin {
 			/* translators: %s: settings link. */
 			self::notice( 'info', sprintf( esc_html__( 'Thawani Pay is in sandbox mode — orders are not charged. Switch to live in %s when you are ready.', 'thawani-pay-for-woocommerce' ), $link ) );
 		}
+	}
+
+	/**
+	 * Settings or transactions screen of this plugin.
+	 *
+	 * @param string $hook    Screen hook / id.
+	 * @param string $section Settings section.
+	 */
+	private static function is_plugin_screen( string $hook, string $section ): bool {
+		return ( 'woocommerce_page_wc-settings' === $hook && Gateway::ID === $section ) || false !== strpos( $hook, TransactionsPage::SLUG );
 	}
 
 	/**

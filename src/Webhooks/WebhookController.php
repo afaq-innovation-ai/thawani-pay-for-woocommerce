@@ -97,6 +97,8 @@ final class WebhookController {
 		 */
 		do_action( 'thawani_pay_webhook_received', $event, $data );
 
+		\AfaqInnovation\ThawaniPay\Admin\Status::record_webhook( $event, (bool) $verified_mode );
+
 		$order = self::find_order( $data );
 		if ( ! $order ) {
 			return new \WP_REST_Response(
