@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check version matches tag
+        run: |
+          VERSION=$(grep -m1 -E '^\s*\*\s*Version:' thawani-pay-for-woocommerce.php | awk '{print $NF}')
+          test "v$VERSION" = "${GITHUB_REF_NAME}" || { echo "Tag ${GITHUB_REF_NAME} does not match plugin version $VERSION"; exit 1; }
+      - name: Build zip
+        run: bin/build-zip.sh
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true

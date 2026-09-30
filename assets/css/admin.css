@@ -1,0 +1,37 @@
+/* Thawani Pay — admin */
+.thawani-pay-intro-cell { padding: 0 !important; }
+.thawani-pay-intro { display: flex; gap: 16px; align-items: center; max-width: 880px; margin: 8px 0 4px; padding: 18px 20px; background: linear-gradient(135deg, #f0fdfa 0%, #fff 60%); border: 1px solid #ccfbf1; border-radius: 12px; }
+.thawani-pay-intro h3 { margin: 0 0 4px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.thawani-pay-intro p { margin: 2px 0; color: #475569; }
+.thawani-pay-intro__links a { text-decoration: none; }
+.thawani-pay-intro__by { color: #94a3b8; }
+.thawani-pay-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; vertical-align: middle; }
+.thawani-pay-badge--test { background: #fef3c7; color: #92400e; }
+.thawani-pay-badge--live { background: #dcfce7; color: #166534; }
+.thawani-pay-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #f1f5f9; color: #334155; }
+.thawani-pay-pill--paid { background: #dcfce7; color: #166534; }
+.thawani-pay-pill--unpaid { background: #fef9c3; color: #854d0e; }
+.thawani-pay-pill--cancelled { background: #fee2e2; color: #991b1b; }
+.thawani-pay-test-result { margin-inline-start: 10px; font-weight: 500; }
+.thawani-pay-test-result.is-loading { color: #64748b; }
+.thawani-pay-test-result.is-ok { color: #15803d; }
+.thawani-pay-test-result.is-ok::before { content: "✓ "; }
+.thawani-pay-test-result.is-error { color: #b91c1c; }
+.thawani-pay-test-result.is-error::before { content: "✕ "; }
+.thawani-pay-copy { display: flex; gap: 6px; max-width: 560px; }
+.thawani-pay-copy input { flex: 1; font-size: 12px; background: #f8fafc; }
+.thawani-pay-warn { color: #92400e !important; }
+.thawani-pay-box dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 10px 0; }
+.thawani-pay-box dt { color: #64748b; font-size: 12px; }
+.thawani-pay-box dd { margin: 0; min-width: 0; }
+.thawani-pay-box code { font-size: 11px; word-break: break-all; background: #f1f5f9; padding: 1px 4px; border-radius: 3px; }
+.thawani-pay-box__status { display: flex; gap: 6px; margin-top: 4px; }
+.thawani-pay-box__sub { font-weight: 600; margin-bottom: 4px; }
+.thawani-pay-box__refunds { margin: 0 0 10px; }
+.thawani-pay-transactions h1 img { vertical-align: middle; margin-inline-end: 6px; border-radius: 6px; }
+.thawani-pay-table { margin-top: 14px; }
+.thawani-pay-table td, .thawani-pay-table th { vertical-align: middle; }
+.thawani-pay-table .num { text-align: end; font-variant-numeric: tabular-nums; }
+.thawani-pay-empty { text-align: center; padding: 40px !important; color: #64748b; }
+.thawani-pay-muted { color: #94a3b8; font-size: 12px; }
+.thawani-pay-transactions .tablenav-pages .button { margin-inline-start: 6px; }

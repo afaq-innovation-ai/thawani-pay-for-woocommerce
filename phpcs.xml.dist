@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="Thawani Pay for WooCommerce">
+    <description>WordPress Coding Standards for the plugin.</description>
+    <file>thawani-pay-for-woocommerce.php</file>
+    <file>uninstall.php</file>
+    <file>src</file>
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+    <config name="testVersion" value="7.4-"/>
+    <config name="minimum_wp_version" value="6.2"/>
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+        <!-- Hook callbacks must accept the arguments WordPress passes, even when unused. -->
+        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+        <!-- Exception messages are logged or passed to WP_Error/wc_add_notice, never echoed raw. -->
+        <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
+    </rule>
+    <rule ref="WordPress.WP.Capabilities">
+        <properties>
+            <property name="custom_capabilities" type="array">
+                <element value="manage_woocommerce"/>
+                <element value="edit_shop_orders"/>
+            </property>
+        </properties>
+    </rule>
+    <rule ref="PHPCompatibilityWP"/>
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="thawani-pay-for-woocommerce"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>
