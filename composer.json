@@ -4,7 +4,9 @@
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
-        { "name": "Afaq Innovation and AI" }
+        {
+            "name": "Afaq Innovation and AI"
+        }
     ],
     "require": {
         "php": ">=7.4"
@@ -30,6 +32,9 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4.33"
+        }
     }
 }
