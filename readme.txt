@@ -4,7 +4,7 @@ Tags: thawani, oman, payment gateway, subscriptions, omr
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Thawani Pay for WooCommerce connects your store to Thawani, one of Oman's leadin
 * Hosted Thawani checkout — no card data on your server.
 * WooCommerce Cart & Checkout blocks and classic shortcode checkout.
 * Itemised order summary (products, shipping, fees) on the Thawani page.
-* Saved cards with OTP / 3-D Secure authorisation, managed from My account.
+* Saved cards wallet: cards shown as bank cards in My account, which customers can rename, set as default or remove.
 * Recurring payments with Subscriptions for WooCommerce (WP Swings), with an automatic payment link when a renewal needs the customer's OTP.
 * Full and partial refunds from the order screen.
 * Signed webhooks (HMAC-SHA256) with replay protection.
@@ -72,6 +72,10 @@ At Thawani. WooCommerce only keeps the card reference, brand, last four digits a
 7. Transactions screen.
 
 == Changelog ==
+
+= 1.3.0 =
+* Saved cards wallet: cards shown as bank cards in My account, with rename, default and remove.
+* Card names shown on the block and classic checkout.
 
 = 1.2.1 =
 * Settings screen: fixed the section menu being shifted left by WooCommerce styles, and the layout now uses the full width of large screens.

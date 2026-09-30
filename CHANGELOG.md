@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-09-30
+
+### Added
+- Saved cards wallet on *My account → Payment methods*: Thawani cards are shown as bank cards (Visa blue, Mastercard black, generic green) with the card name, masked number, debit/credit type, expiry, and Default / Expired badges. Cards of other gateways keep the standard table.
+- Customers can rename a card. The name chosen on the Thawani page is imported automatically; a name set in the store takes priority. Thawani has no rename endpoint, so custom names are stored in WooCommerce.
+- Card names appear on the block checkout (`display_brand`) and the classic checkout (brand logo + name + masked number).
+
+### Fixed
+- Card funding type (Debit / Credit) is stored under its own meta key instead of colliding with the WooCommerce `card_type` property.
+
 ## [1.2.1] — 2026-09-30
 
 ### Fixed
@@ -48,6 +58,7 @@ All notable changes to this project are documented here. The format follows
 - HPOS and Cart & Checkout blocks compatibility declarations.
 - PHPUnit tests, WordPress Coding Standards, CI and release workflows, Docker development stack.
 
+[1.3.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.3.0
 [1.2.1]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.1
 [1.2.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.2.0
 [1.1.0]: https://github.com/afaq-innovation-ai/thawani-pay-for-woocommerce/releases/tag/v1.1.0

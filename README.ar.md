@@ -55,8 +55,8 @@
 <tr>
 <td valign="top">
 
-### 🔁 البطاقات المحفوظة
-يدفع العميل العائد ببطاقته المحفوظة ويكتفي بتأكيد رمز التحقق. تحفظ ثواني البطاقات، ويديرها العميل من حسابه.
+### 🔁 محفظة البطاقات
+تظهر البطاقات المحفوظة في «حسابي» كبطاقات بنكية حقيقية: ألوان العلامة، والاسم، وآخر أربعة أرقام، وتاريخ الانتهاء. يستطيع العميل تسميتها، واختيار الافتراضية، وحذفها، ثم الدفع بنقرة ورمز تحقق.
 
 </td>
 <td valign="top">
@@ -168,21 +168,26 @@
 </tr>
 </table>
 
-### البطاقات المحفوظة
+### محفظة البطاقات
+
+<p align="center">
+  <img src="docs/screenshots/28-saved-cards-arabic.png" alt="البطاقات المحفوظة كبطاقات بنكية" width="820" />
+  <br><b>البطاقات المحفوظة بشكل بطاقات بنكية</b><br><sub>ألوان العلامة، واسم البطاقة، وآخر الأرقام، والنوع، وتاريخ الانتهاء، مع شارتي «الافتراضية» و«منتهية».</sub>
+</p>
 
 <table>
 <tr>
 <td width="33%" valign="top">
-<img src="docs/screenshots/13-thawani-save-card.png" alt="حفظ البطاقة" />
-<p align="center"><b>حفظ البطاقة لدى ثواني</b></p>
-</td>
-<td width="33%" valign="top">
-<img src="docs/screenshots/14-saved-cards.png" alt="البطاقات في حسابي" />
-<p align="center"><b>إدارتها من «حسابي»</b></p>
+<img src="docs/screenshots/27-rename-card.png" alt="تسمية البطاقة" />
+<p align="center"><b>سمِّ بطاقتك كما تريد</b><br><sub>«بطاقة الراتب»، «بطاقة السفر»… يظهر الاسم في كل مكان حتى صفحة الدفع.</sub></p>
 </td>
 <td width="33%" valign="top">
 <img src="docs/screenshots/15-checkout-saved-card.png" alt="الدفع بالبطاقة المحفوظة" />
-<p align="center"><b>الدفع لاحقا بنقرة ورمز تحقق</b></p>
+<p align="center"><b>اختر البطاقة باسمها عند الدفع</b><br><sub>نقرة واحدة ثم رمز التحقق من البنك.</sub></p>
+</td>
+<td width="33%" valign="top">
+<img src="docs/screenshots/13-thawani-save-card.png" alt="حفظ البطاقة" />
+<p align="center"><b>محفوظة بأمان لدى ثواني</b><br><sub>يُستورد الاسم المختار في صفحة ثواني تلقائيا.</sub></p>
 </td>
 </tr>
 </table>

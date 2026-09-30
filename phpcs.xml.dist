@@ -4,6 +4,7 @@
     <file>thawani-pay-for-woocommerce.php</file>
     <file>uninstall.php</file>
     <file>src</file>
+    <file>templates</file>
     <arg name="extensions" value="php"/>
     <arg value="sp"/>
     <config name="testVersion" value="7.4-"/>

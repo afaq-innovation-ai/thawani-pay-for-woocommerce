@@ -39,6 +39,9 @@ final class TokenManager {
 		add_action( 'woocommerce_payment_token_deleted', array( __CLASS__, 'on_token_deleted' ), 10, 2 );
 		add_filter( 'woocommerce_get_customer_payment_tokens', array( __CLASS__, 'filter_tokens_by_mode' ), 10, 3 );
 		add_action( 'woocommerce_before_account_payment_methods', array( __CLASS__, 'on_payment_methods_page' ) );
+		add_filter( 'woocommerce_payment_methods_list_item', array( __CLASS__, 'list_item' ), 20, 2 );
+		add_filter( 'wc_get_template', array( __CLASS__, 'payment_methods_template' ), 10, 2 );
+		add_action( 'template_redirect', array( __CLASS__, 'handle_rename' ) );
 	}
 
 	/**
@@ -142,6 +145,14 @@ final class TokenManager {
 			}
 			$seen[ self::fingerprint( $remote[ $id ] ) ] = true;
 			$existing[ $id ]                             = true;
+
+			$nickname = (string) ( $remote[ $id ]['nickname'] ?? '' );
+			$funding  = (string) ( $remote[ $id ]['card_type'] ?? '' );
+			if ( $nickname !== (string) $token->get_meta( 'thawani_nickname' ) || $funding !== (string) $token->get_meta( 'funding' ) ) {
+				$token->update_meta_data( 'thawani_nickname', $nickname );
+				$token->update_meta_data( 'funding', $funding );
+				$token->save();
+			}
 		}
 		add_filter( 'woocommerce_get_customer_payment_tokens', array( __CLASS__, 'filter_tokens_by_mode' ), 10, 3 );
 
@@ -165,7 +176,8 @@ final class TokenManager {
 			$token->set_expiry_year( (string) ( $year < 100 ? 2000 + $year : $year ) );
 			$token->add_meta_data( 'thawani_mode', $mode, true );
 			$token->add_meta_data( 'masked_card', $masked, true );
-			$token->add_meta_data( 'card_type', (string) ( $card['card_type'] ?? '' ), true );
+			$token->add_meta_data( 'funding', (string) ( $card['card_type'] ?? '' ), true );
+			$token->add_meta_data( 'thawani_nickname', (string) ( $card['nickname'] ?? '' ), true );
 			$token->save();
 		}
 	}
@@ -201,6 +213,93 @@ final class TokenManager {
 		}
 
 		return $found;
+	}
+
+	/**
+	 * Name shown for a saved card: the customer's own name, else the nickname given on the Thawani page.
+	 *
+	 * @param \WC_Payment_Token $token Token.
+	 */
+	public static function nickname( \WC_Payment_Token $token ): string {
+		$name = trim( (string) $token->get_meta( 'nickname' ) );
+
+		return '' !== $name ? $name : trim( (string) $token->get_meta( 'thawani_nickname' ) );
+	}
+
+	/**
+	 * Card brand label, e.g. "Visa".
+	 *
+	 * @param \WC_Payment_Token $token Token.
+	 */
+	public static function brand_label( \WC_Payment_Token $token ): string {
+		$type = $token instanceof \WC_Payment_Token_CC ? (string) $token->get_card_type() : '';
+
+		return $type ? wc_get_credit_card_type_label( $type ) : __( 'Card', 'thawani-pay-for-woocommerce' );
+	}
+
+	/**
+	 * Show the card nickname in saved-method lists (block checkout reads `display_brand`).
+	 *
+	 * @param array             $item  List item.
+	 * @param \WC_Payment_Token $token Token.
+	 */
+	public static function list_item( $item, $token ) {
+		if ( $token instanceof \WC_Payment_Token && Gateway::ID === $token->get_gateway_id() ) {
+			$name = self::nickname( $token );
+			if ( '' !== $name ) {
+				$item['method']['display_brand'] = $name . ' · ' . self::brand_label( $token );
+			}
+			$item['method']['token_id'] = $token->get_id();
+		}
+
+		return $item;
+	}
+
+	/**
+	 * Use the plugin's card-style "Payment methods" template unless the theme ships its own.
+	 *
+	 * @param string $located       Located template path.
+	 * @param string $template_name Template name.
+	 */
+	public static function payment_methods_template( $located, $template_name ) {
+		if ( 'myaccount/payment-methods.php' !== $template_name || ! defined( 'WC_PLUGIN_FILE' ) ) {
+			return $located;
+		}
+
+		// Respect template overrides in the theme.
+		if ( 0 !== strpos( wp_normalize_path( (string) $located ), wp_normalize_path( dirname( WC_PLUGIN_FILE ) ) ) ) {
+			return $located;
+		}
+
+		return THAWANI_PAY_PATH . 'templates/myaccount/payment-methods.php';
+	}
+
+	/**
+	 * Rename a saved card (stored in the store; Thawani has no rename endpoint).
+	 */
+	public static function handle_rename(): void {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- verified below.
+		if ( empty( $_POST['thawani_pay_rename_card'] ) || ! is_user_logged_in() ) {
+			return;
+		}
+
+		$token_id = isset( $_POST['token_id'] ) ? absint( $_POST['token_id'] ) : 0;
+		$nonce    = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		$name     = isset( $_POST['nickname'] ) ? sanitize_text_field( wp_unslash( $_POST['nickname'] ) ) : '';
+		// phpcs:enable
+
+		$token = $token_id ? \WC_Payment_Tokens::get( $token_id ) : null;
+
+		if ( ! wp_verify_nonce( $nonce, 'thawani_pay_rename_card_' . $token_id ) || ! $token || Gateway::ID !== $token->get_gateway_id() || (int) $token->get_user_id() !== get_current_user_id() ) {
+			wc_add_notice( __( 'That card could not be renamed.', 'thawani-pay-for-woocommerce' ), 'error' );
+		} else {
+			$token->update_meta_data( 'nickname', mb_substr( $name, 0, 30 ) );
+			$token->save();
+			wc_add_notice( '' !== $name ? __( 'Card name updated.', 'thawani-pay-for-woocommerce' ) : __( 'Card name reset.', 'thawani-pay-for-woocommerce' ) );
+		}
+
+		wp_safe_redirect( wc_get_account_endpoint_url( 'payment-methods' ) );
+		exit;
 	}
 
 	/**

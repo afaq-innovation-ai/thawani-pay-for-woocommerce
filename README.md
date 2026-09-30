@@ -62,8 +62,8 @@ Full or partial refunds straight from the WooCommerce order screen. The money go
 <tr>
 <td valign="top">
 
-### 🔁 Saved cards
-Returning customers pay with a saved card and just confirm the OTP. Cards are stored by Thawani and managed under *My account*.
+### 🔁 Saved cards wallet
+Saved cards appear as real bank cards under *My account*: brand colours, name, last digits and expiry. Customers can rename, set a default or remove them, then pay with one click + OTP.
 
 </td>
 <td valign="top">
@@ -175,21 +175,26 @@ A settings screen with a live health panel shows the API connection, webhooks, c
 </tr>
 </table>
 
-### Saved cards
+### Saved cards wallet
+
+<p align="center">
+  <img src="docs/screenshots/14-saved-cards.png" alt="Saved cards shown as bank cards in My account" width="820" />
+  <br><b>Saved cards shown as bank cards</b><br><sub>Brand colours, card name, last digits, type and expiry, with Default and Expired badges.</sub>
+</p>
 
 <table>
 <tr>
 <td width="33%" valign="top">
-<img src="docs/screenshots/13-thawani-save-card.png" alt="Save card" />
-<p align="center"><b>Save the card at Thawani</b></p>
-</td>
-<td width="33%" valign="top">
-<img src="docs/screenshots/14-saved-cards.png" alt="My account cards" />
-<p align="center"><b>Manage it in My account</b></p>
+<img src="docs/screenshots/27-rename-card.png" alt="Rename a card" />
+<p align="center"><b>Rename any card</b><br><sub>“Salary card”, “Travel card”… shown everywhere, including checkout.</sub></p>
 </td>
 <td width="33%" valign="top">
 <img src="docs/screenshots/15-checkout-saved-card.png" alt="Pay with saved card" />
-<p align="center"><b>Pay next time with one click + OTP</b></p>
+<p align="center"><b>Pick a card by name at checkout</b><br><sub>One click, then the bank OTP.</sub></p>
+</td>
+<td width="33%" valign="top">
+<img src="docs/screenshots/13-thawani-save-card.png" alt="Save card" />
+<p align="center"><b>Saved securely at Thawani</b><br><sub>The name chosen on Thawani's page is imported automatically.</sub></p>
 </td>
 </tr>
 </table>
@@ -224,6 +229,12 @@ A settings screen with a live health panel shows the API connection, webhooks, c
 <td width="50%" valign="top">
 <img src="docs/screenshots/20-arabic-settings.png" alt="Arabic settings" />
 <p align="center"><b>Settings in Arabic (RTL)</b></p>
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top">
+<img src="docs/screenshots/28-saved-cards-arabic.png" alt="Arabic saved cards" />
+<p align="center"><b>Saved cards wallet in Arabic</b></p>
 </td>
 </tr>
 </table>
